@@ -2,64 +2,62 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Canvas from './components/Canvas'
-import { subscribeToDrawing } from './api';
+import paper from '../../node_modules/paper/dist/paper-core.js'
 
-// const URL = 'https://inputtools.google.com/request?ime=handwriting&app=quickdraw&dbg=1&cs=1&oe=UTF-8'
 
+const goal_options = ['apple','bowtie','circle','hexagon','sword','bike','watermelon','pizza','dog','foot','calculator','smiley face']
 
 
 class App extends Component {
 
-  constructor(props){
-    super()
-
-    // subscribeToDrawing((err, timestamp) => this.setState({timestamp}), 'hello')
-    // this.socket = props.io();
-  }
+  
   state = {
-    // canvasTwo: 'no timestamp yet'
+    goal: goal_options[Math.floor(Math.random() * goal_options.length)],
+    timer: 0,
+    gameOver: false
+  }
+  scope1 = new paper.PaperScope()
+  scope2 = new paper.PaperScope()
+
+
+  componentDidMount(){
+    this.interval = setInterval(this.incrementTimer, 1000)
   }
 
-  // componentDidMount(){
-  //   this.interval = setInterval(fetchGuesses, 1000)
-  // }
+  incrementTimer = () => {
+    this.setState({timer:this.state.timer + 1})
+  }
 
-  // componentWillUnmount(){
-  //   clearInterval(this.interval)
-  // }
+  endFetch() {
+    console.log('clearing interval')
+    clearInterval(this.interval)
+  }
+
+  gameOver = () => {
+    this.endFetch()
+    this.setState({
+      gameOver: true
+    })
+  }
 
   
 
-  // fetchGuesses(vectors) {
-  //   let data = {"input_type":0,
-  //            "requests":[
-  //             {"language":"quickdraw",
-  //             "writing_guide":{"width":1200,"height":260},
-  //             "ink":[vectors]
-  //             }
-  //            ]
-  //           }
 
-  //   fetch(URL, {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type':'application/json'
-  //     },
-  //     body: JSON.stringify(data)
-  //   }).then(r=>r.json()).then(json=>console.log(json))
-  // }
 
   render() {
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
+          
 
           <h1 className="App-title">Drawing Game</h1>
           
         </header>
-        
-        <Canvas />
+        <p>Instructions: Race to draw a picture that the AI can recognize!</p>
+        <h1>Your Goal: {this.state.goal}</h1>
+        <h1>Timer: {this.state.timer}</h1>
+        <Canvas scope={this.scope1} goal={this.state.goal} player='1' timer={this.state.timer} gameOver={this.gameOver}/>
+        <Canvas scope={this.scope2} goal={this.state.goal} player='2' timer={this.state.timer} gameOver={this.gameOver}/>
       </div>
     );
   }

@@ -9,8 +9,9 @@
 
 .App-header {
   background-color: #222;
-  height: 150px;
-  padding: 20px;
+  height: 25px;
+  padding-bottom: 20px;
+  padding-top: 10px;
   color: white;
 }
 
@@ -29,4 +30,24 @@
 
 canvas {
   border: 2px solid black;
+}
+
+.canvas-container {
+  float: left;
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.winner {
+  color: green;
+}
+
+.drawing {
+  padding: 10px;
+}
+
+.winning-drawing {
+  padding: 2px;
+  border: 10px solid green;
 }

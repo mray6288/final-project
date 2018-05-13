@@ -1,101 +1,91 @@
 import React from 'react'
-import paper from '../../node_modules/paper/dist/paper-core.js'
-// import {io} from '../api'
-import { subscribeToDrawing } from '../api';
-// import openSocket from 'socket.io-client'
-// const  io = openSocket('http://localhost:8000')
+// import paper from '../../node_modules/paper/dist/paper-core.js'
+import openSocket from 'socket.io-client'
 
-let canvas = null
-let tool = null
-let path = null
-let vectors = [[],[],[]]
-let time_0 = 0
+
 const URL = 'https://inputtools.google.com/request?ime=handwriting&app=quickdraw&dbg=1&cs=1&oe=UTF-8'
 
-const goal_options = ['apple','bowtie','circle','hexagon','sword','bike','watermelon','pizza','dog','foot','calculator','smiley face']
+
+
 
 export default class Canvas extends React.Component {
-	constructor(){
+	constructor(props){
 		super()
 		this.state = {
-			guess: 'No Fucking Clue',
+			guess: '',
 			hasWon: false,
 			hasLost: false,
-			counter: 0,
-			otherCanvas: null,
 		}
+		this.tool = null
+		this.path = null
+		this.vectors = [[],[],[]]
+		this.time_0 = 0
+		this.vectorLength = 0
 
-		// subscribeToDrawing((err, otherCanvas) => this.setState({otherCanvas}), this.canvas)
-		// this.socket = props.io()
-
+		this.io = openSocket('http://localhost:8000')
+		this.io.on('drawing', this.addPoint.bind(this))
+		this.io.on('endPath', this.endPath.bind(this))
+		this.io.emit('initialize')
+		this.paperSetup = props.scope
+		
 	}
-
-	goal = goal_options[Math.floor(Math.random() * goal_options.length)]
 
 	
 
+
+	addPoint(point){
+
+		console.log('adding point', this.paperSetup._id)
+		if (!this.path){
+			this.path = new this.paperSetup.Path();
+			this.path.strokeColor = 'black';
+			// console.log('new path')
+		}
+		
+		this.path.add(point);
+		
+	}
+
+	endPath(){
+		this.path = null
+	}
+
+	emitDrawing(event){
+		console.log('paperscope', this.paperSetup._id)
+		console.log('player', this.props.player)
+		this.io.emit('drawing', {x: event.point.x, y: event.point.y})
+		this.vectors[0].push(event.point.x)
+		this.vectors[1].push(event.point.y)
+		this.vectors[2].push(Date.now() - this.time_0)
+	}
+
+	emitEndPath(){
+
+
+		this.io.emit('endPath', null)
+	}
+
 	componentDidMount(){
 		this.interval = setInterval(this.fetchGuesses, 1000)
-		this.canvas = document.getElementById('myCanvas');
-		paper.setup(this.canvas);
+		console.log('setup player', this.props.player)
+		console.log('setup paperscope', this.paperSetup._id)
+		this.canvas = document.getElementById(`player-${this.props.player}`);
 		
-		tool = new paper.Tool()
-		time_0 = Date.now()
-
+		this.paperSetup.setup(this.canvas);
+		
+		this.tool = new this.paperSetup.Tool()
+		this.time_0 = Date.now()
 		
 
-		let addPoint = (point) => {
-			if (!path){
-				path = new paper.Path();
-				path.strokeColor = 'black';
-				console.log('new path')
-			}
-			let time = Date.now()
-			path.add(point);
-			// debugger
-			vectors[0].push(point.x)
-			vectors[1].push(point.y)
-			vectors[2].push(time - time_0)
-		}
 
-		// io.on('drawing', addPoint);
-
-		tool.onMouseDown = function(event) {
-			console.log('hello', this.canvas)
-			// onMouseDown(event.point)
-			// let {x, y} = event.point
-			
-			// console.log(x, y)
-			// debugger
-			// var pointOne     = new paper.Point(x, y);
-			// // var pointTwo     = new paper.Point(-150, 100);
-			// var pointThree   = new paper.Point(350, 30);
-			// path.moveTo(pointOne);
-			// // path.lineTo(pointOne.add(pointTwo));
-			// // path.lineTo(pointTwo.add(pointThree));
-			// path.lineTo(pointOne.add(pointThree));
-			// path.closed = true;
-			// addPoint(event.point)
-			// io.emit('drawing', {point: event.point})
-
-			// paper.view.draw();
-		}
+		this.tool.onMouseDown = null
 
 		
 
 
-		tool.onMouseDrag = function(event) {
-			addPoint(event.point)
-			// io.emit('drawing', {point: event.point})
-			
-			
-			// console.log(vectors)
-		}
+		this.tool.onMouseDrag = this.emitDrawing.bind(this)
 
-		tool.onMouseUp = function(event) {
-			// console.log('mouse is up', event.point)
-			path = null
-		}
+		this.tool.onMouseUp = this.emitEndPath.bind(this)
 
 		// tool.onResize = function(event) {
 		// 	// Whenever the window is resized, recenter the path:
@@ -105,16 +95,22 @@ export default class Canvas extends React.Component {
 		
 	}
 
-	endFetch = () => {
-		clearInterval(this.interval)
-	}
+
 
 	fetchGuesses = () => {
+		// console.log(this.vectors[0].length, this.)
+		if (this.vectors[0].length === this.vectorLength){
+			return null
+		} else {
+			this.vectorLength = this.vectors[0].length
+		}
+		// console.log('player', this.props.player)
+		// console.log('vectors', this.vectors)
 	    let data = {"input_type":0,
 	             "requests":[
 	              {"language":"quickdraw",
 	              "writing_guide":{"width":1200,"height":260},
-	              "ink":[vectors]
+	              "ink":[this.vectors]
 	              }
 	             ]
 	            }
@@ -129,6 +125,8 @@ export default class Canvas extends React.Component {
 	}
 
 	setGuess(json) {
+
+
 		let won = false
 		let lost = false
 		let guesses = json[1][0][1]
@@ -140,17 +138,17 @@ export default class Canvas extends React.Component {
 		if(guesses.length > 0){
 			scores = JSON.parse(scores.slice(12, scores.indexOf(' Combiner')))
 			for(let score of scores){
-				if (score[0] === this.goal){
+				if (score[0] === this.props.goal){
 					goalScore = score[1]
 					break
 				}
 			}
-			if (guesses[0] === this.goal){
+			if (guesses[0] === this.props.goal){
 				if (goalScore < 10){
-					this.endFetch()
+					this.props.gameOver()
 					won = true
-					guesses = [this.goal]
-					console.log(json)
+					guesses = [this.props.goal]
+					// console.log(json)
 				} else {
 					guesses = [guesses[1]]
 					console.log(guesses)
@@ -159,15 +157,14 @@ export default class Canvas extends React.Component {
 				console.log(goalScore)
 				
 			}
-			if (this.state.counter === 29 && !won){
-				lost = true
-				this.endFetch()
-			}
+			// if (this.props.timer === 29 && !won){
+			// 	lost = true
+			// 	this.endFetch()
+			// }
 			this.setState({
 				guess: guesses[0],
 				hasWon: won,
 				hasLost: lost,
-				counter: this.state.counter + 1
 			})
 		}
 
@@ -176,19 +173,25 @@ export default class Canvas extends React.Component {
 
 	}
 
+	clearCanvas = () => {
+		this.paperSetup.project.activeLayer.clear()
+		this.vectors = [[],[],[]]
+	}
 
 
 
 
 
 	render() {
-		return <div id='canvas-container'  >
-		<h1>Your Goal: {this.goal} Timer: {this.state.counter}</h1>
+		return <div className='canvas-container'  >
+		<h2 className='winner'>{this.state.hasWon ? `PLAYER ${this.props.player} WINS! ${this.props.timer} SECONDS` : <br/>}</h2>
+		
+		<h2>AI Guess: {this.state.guess}</h2>
 		{this.state.otherCanvas}<br/>
-		<canvas id="myCanvas" height='400px' width='800px' resize></canvas>
-		<h2>Computer Guess: {this.state.guess}</h2>
-		<button onClick={this.endFetch}>EndFetch</button>
-		{this.state.hasWon ? <h1>YOU WIN! {this.state.counter} SECONDS</h1> : ''}
+		<canvas id={`player-${this.props.player}`} className={this.state.hasWon ? 'winning-drawing' : 'drawing'} height='370px' width='670px' resize></canvas>
+		<h3>PLAYER {this.props.player}</h3>
+		<button onClick={this.clearCanvas}>Clear</button>
+		{this.state.hasWon ? <h1>PLAYER {this.props.player} WINS! {this.props.timer} SECONDS</h1> : ''}
 		{this.state.hasLost ? <h1>YOU LOST!</h1> : ''}
 		</div>
 	}
