@@ -13,7 +13,9 @@ export default class Canvas extends React.Component {
 			guess: '',
 			hasWon: false,
 			gameOver: props.gameOver,
+			
 		}
+		this.isMine = props.scope._id === props.playerId
 		this.tool = null
 		this.path = null
 		this.vectors = [[],[],[]]
@@ -23,7 +25,7 @@ export default class Canvas extends React.Component {
 		this.io = props.io
 		this.io.on('drawing', this.addPoint.bind(this))
 		this.io.on('endPath', this.endPath.bind(this))
-		// this.io.emit('initialize')
+		this.io.on('setGuess', this.setGuess.bind(this))
 		this.paperSetup = props.scope
 		
 	}
@@ -72,19 +74,20 @@ export default class Canvas extends React.Component {
 	}
 
 	componentDidMount(){
-		this.interval = setInterval(this.fetchGuesses, 1000)
+		
 
 		this.canvas = document.getElementById(`canvas-${this.paperSetup._id}`);
 		
 		this.paperSetup.setup(this.canvas);
 		
-		this.tool = new this.paperSetup.Tool()
-		this.time_0 = Date.now()
+		
 		
 
-		if (this.paperSetup._id === this.props.playerId){
+		if (this.isMine){
+			this.interval = setInterval(this.fetchGuesses, 1000)
 
-
+			this.tool = new this.paperSetup.Tool()
+			this.time_0 = Date.now()
 			this.tool.onMouseDown = null
 
 			this.tool.onMouseDrag = this.emitDrawing.bind(this)
@@ -125,11 +128,15 @@ export default class Canvas extends React.Component {
 	        'Content-Type':'application/json'
 	      },
 	      body: JSON.stringify(data)
-	    }).then(r=>r.json()).then(json=>this.setGuess(json))
+	    }).then(r=>r.json()).then(json=>this.io.emit('setGuess', {json: json, id:this.paperSetup._id}))
+
 	}
 
-	setGuess(json) {
-
+	setGuess(data) {
+		if (data.id !== this.paperSetup._id){
+			return null
+		}
+		let json = data.json
 
 		let won = false
 		let guesses = json[1][0][1]

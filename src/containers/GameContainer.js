@@ -23,6 +23,7 @@ export default class GameContainer extends React.Component {
 		this.io = openSocket('http://3f26a47c.ngrok.io')//http://localhost:8000')
 		this.io.on('initialize game', this.setPlayer.bind(this))
 		this.io.emit('initialize game')
+		this.io.on('increment timer', this.incrementTimer.bind(this))
 
 		
 
@@ -39,7 +40,7 @@ export default class GameContainer extends React.Component {
 	// }
 
 	startGame(data){
-		this.interval = setInterval(this.incrementTimer, 1000)
+		// this.interval = setInterval(this.incrementTimer, 1000)
 		this.setState({
 			goal: data.goal,
 			gameStarted: true
