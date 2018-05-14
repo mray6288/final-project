@@ -14,7 +14,7 @@ export default class Canvas extends React.Component {
 		this.state = {
 			guess: '',
 			hasWon: false,
-			hasLost: false,
+			gameOver: props.gameOver,
 		}
 		this.tool = null
 		this.path = null
@@ -164,7 +164,7 @@ export default class Canvas extends React.Component {
 			this.setState({
 				guess: guesses[0],
 				hasWon: won,
-				hasLost: lost,
+				gameOver: true,
 			})
 		}
 
@@ -175,7 +175,9 @@ export default class Canvas extends React.Component {
 
 	clearCanvas = () => {
 		this.paperSetup.project.activeLayer.clear()
-		this.vectors = [[],[],[]]
+		if (!this.state.gameOver){
+			this.vectors = [[],[],[]]
+		}
 	}
 
 
@@ -191,8 +193,6 @@ export default class Canvas extends React.Component {
 		<canvas id={`player-${this.props.player}`} className={this.state.hasWon ? 'winning-drawing' : 'drawing'} height='370px' width='670px' resize></canvas>
 		<h3>PLAYER {this.props.player}</h3>
 		<button onClick={this.clearCanvas}>Clear</button>
-		{this.state.hasWon ? <h1>PLAYER {this.props.player} WINS! {this.props.timer} SECONDS</h1> : ''}
-		{this.state.hasLost ? <h1>YOU LOST!</h1> : ''}
 		</div>
 	}
 }
