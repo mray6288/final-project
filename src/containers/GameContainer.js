@@ -21,7 +21,7 @@ export default class GameContainer extends React.Component {
 
 		this.scope1 = new paper.PaperScope()
 		this.scope2 = new paper.PaperScope()
-		this.io = openSocket('http://3f26a47c.ngrok.io')//http://localhost:8000')
+		this.io = openSocket('https://3f26a47c.ngrok.io')//http://localhost:8000')
 		this.io.on('initialize game', this.setPlayer.bind(this))
 		this.io.emit('initialize game')
 		this.io.on('increment timer', this.incrementTimer.bind(this))
