@@ -40,7 +40,7 @@ export default class GameContainer extends React.Component {
 	// }
 
 	startGame(data){
-		// this.interval = setInterval(this.incrementTimer, 1000)
+		this.interval = setInterval(this.incrementTimer, 1000)
 		this.setState({
 			goal: data.goal,
 			gameStarted: true
