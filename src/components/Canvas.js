@@ -176,6 +176,9 @@ export default class Canvas extends React.Component {
 				hasWon: won,
 				gameOver: true,
 			})
+			if (this.isMine){
+				this.io.emit('gameOver')
+			}
 		}
 
 		
@@ -196,12 +199,12 @@ export default class Canvas extends React.Component {
 
 	render() {
 		return <div className='canvas-object'  >
-		<h2 className='winner'>{this.state.hasWon ? `PLAYER ${this.props.playerId} WINS! ${this.props.timer} SECONDS` : <br/>}</h2>
+		<h2 className='winner'>{this.state.hasWon ? (this.isMine ? 'YOU WIN!' : 'OPPONENT WINS!') + ` ${this.props.timer} SECONDS` : <br/>}</h2>
 		
 		<h2>AI Guess: {this.state.guess}</h2>
 		{this.state.otherCanvas}<br/>
 		<canvas id={`canvas-${this.paperSetup._id}`} className={this.state.hasWon ? 'winning-drawing' : 'drawing'} height='370px' width='670px' resize></canvas>
-		<h3>{this.paperSetup._id === this.props.playerId ? 'YOU' : 'THEM'}</h3>
+		<h3>{this.paperSetup._id === this.props.playerId ? 'YOU' : 'OPPONENT'}</h3>
 		<button onClick={this.clearCanvas}>Clear</button>
 		</div>
 	}
