@@ -1,6 +1,4 @@
 import React from 'react'
-// import paper from '../../node_modules/paper/dist/paper-core.js'
-import openSocket from 'socket.io-client'
 
 
 const URL = 'https://inputtools.google.com/request?ime=handwriting&app=quickdraw&dbg=1&cs=1&oe=UTF-8'
@@ -22,10 +20,12 @@ export default class Canvas extends React.Component {
 		this.time_0 = 0
 		this.vectorLength = 0
 
-		this.io = openSocket('http://localhost:8000')
+		// this.io = openSocket('http://localhost:8000')
+		console.log(props.io)
+		this.io = props.io
 		this.io.on('drawing', this.addPoint.bind(this))
 		this.io.on('endPath', this.endPath.bind(this))
-		this.io.emit('initialize')
+		// this.io.emit('initialize')
 		this.paperSetup = props.scope
 		
 	}
@@ -33,27 +33,36 @@ export default class Canvas extends React.Component {
 	
 
 
-	addPoint(point){
+	addPoint(data){
+		if (data.id !== this.paperSetup._id){
+			return null
+		} else {
+			this.paperSetup.activate()
+		}
 
-		console.log('adding point', this.paperSetup._id)
 		if (!this.path){
 			this.path = new this.paperSetup.Path();
 			this.path.strokeColor = 'black';
 			// console.log('new path')
 		}
 		
-		this.path.add(point);
+		this.path.add(data.point);
 		
 	}
 
-	endPath(){
+	endPath(data){
+		if (data.id !== this.paperSetup._id){
+			return null
+		} else {
+			this.paperSetup.activate()
+		}
 		this.path = null
 	}
 
 	emitDrawing(event){
-		console.log('paperscope', this.paperSetup._id)
-		console.log('player', this.props.player)
-		this.io.emit('drawing', {x: event.point.x, y: event.point.y})
+		// console.log('paperscope', this.paperSetup._id)
+		// console.log('player', this.props.player)
+		this.io.emit('drawing', {point: {x: event.point.x, y: event.point.y}, id: this.paperSetup._id})
 		this.vectors[0].push(event.point.x)
 		this.vectors[1].push(event.point.y)
 		this.vectors[2].push(Date.now() - this.time_0)
@@ -61,8 +70,8 @@ export default class Canvas extends React.Component {
 
 	emitEndPath(){
 
-
-		this.io.emit('endPath', null)
+		// console.log('ending path on', this.paperSetup._id)
+		this.io.emit('endPath', {id: this.paperSetup._id})
 	}
 
 	componentDidMount(){
@@ -128,7 +137,6 @@ export default class Canvas extends React.Component {
 
 
 		let won = false
-		let lost = false
 		let guesses = json[1][0][1]
 		let scores = json[1][0][3].debug_info
 		let goalScore = null
@@ -185,7 +193,7 @@ export default class Canvas extends React.Component {
 
 
 	render() {
-		return <div className='canvas-container'  >
+		return <div className='canvas-object'  >
 		<h2 className='winner'>{this.state.hasWon ? `PLAYER ${this.props.player} WINS! ${this.props.timer} SECONDS` : <br/>}</h2>
 		
 		<h2>AI Guess: {this.state.guess}</h2>

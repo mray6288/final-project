@@ -5,8 +5,9 @@ io.on('connection', (client) => {
     // console.log('client is drawing')
     io.emit('drawing', data)
   }),
-  client.on('endPath', () => io.emit('endPath')),
-  client.on('initialize', () => console.log('client initialized'))
+  client.on('endPath', (data) => io.emit('endPath', data)),
+  client.on('initialize game', (data) => io.emit('initialize game', data)),
+  client.on('start game', () => io.emit('start game'))
 })
 
 const port = 8000
