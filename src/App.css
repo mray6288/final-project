@@ -30,6 +30,7 @@
 
 canvas {
   border: 2px solid black;
+  cursor: url('http://cursors2.totallyfreecursors.com/thumbnails/pencil.gif'), auto;
 }
 
 .canvas-object {

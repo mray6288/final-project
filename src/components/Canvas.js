@@ -43,6 +43,7 @@ export default class Canvas extends React.Component {
 		if (!this.path){
 			this.path = new this.paperSetup.Path();
 			this.path.strokeColor = 'black';
+			this.path.strokeWidth = 8;
 			// console.log('new path')
 		}
 		
