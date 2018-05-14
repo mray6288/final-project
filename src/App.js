@@ -9,15 +9,27 @@ class App extends Component {
 
   
   state = {
-    enterGame: false
+    enterGame: false,
+    username: '',
+    gameNum: 1
   }
-  
 
 
   
-  clickEnterGame = () => {
+  submitUsername = (event) => {
     this.setState({
-      enterGame: true
+      enterGame: true,
+      username: event.target.username.value,
+      gameContainer: <GameContainer key={this.state.gameNum} username={this.state.username} newGame={this.newGame}/>
+    })
+
+  }
+
+  newGame = () => {
+    console.log('new game?', this.state)
+    this.setState({
+      gameNum: this.state.gameNum+1,
+      gameContainer: <GameContainer key={this.state.gameNum+1} username={this.state.username} newGame={this.newGame}/>
     })
   }
   
@@ -25,7 +37,13 @@ class App extends Component {
 
 
   render() {
-    let button = <button onClick={this.clickEnterGame} >Enter Game</button>
+    let button = (
+      <form onSubmit={this.submitUsername}>
+
+      Username: <input type='text' name='username' />
+      <input type='submit' value='Enter Game'/>
+      </form>
+      )
     return (
       <div className="App">
         <header className="App-header">
@@ -35,7 +53,7 @@ class App extends Component {
           
         </header>
         <p>Instructions: Race to draw a picture that the AI can recognize!</p>
-        {this.state.enterGame ? <GameContainer /> : button}
+        {this.state.enterGame ? <GameContainer key={this.state.gameNum+1} username={this.state.username} newGame={this.newGame}/> : button}
         
       </div>
     );

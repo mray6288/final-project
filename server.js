@@ -17,23 +17,27 @@ var ServerInterval = (function () {
 
 let openGame = false
 let gameId = 1
+let usernames = []
 
 io.on('connection', (client) => {
 	
-	client.on('initialize game', () => {
+	client.on('initialize game', (data) => {
 		let num_players = Object.keys(io.clients().connected).length
 		// clearInterval(ServerInterval.get())
 		let thisGame = `game-${gameId}`
 		client.join(thisGame)	
-		
+		console.log('initializing', data.username, 'in gameId', gameId)
 		if (openGame){
+			usernames.push(data.username)
 			client.emit('initialize game', {player: 2})
 			goal = goal_options[Math.floor(Math.random() * goal_options.length)]
-			io.to(thisGame).emit('start game', {goal: goal})
+			io.to(thisGame).emit('start game', {goal: goal, usernames: usernames})
 			// let thisInterval = setInterval(() => io.to(thisGame).emit('increment timer'), 1000)
 			openGame = false
 			gameId++
+			usernames = []
 		} else {
+			usernames.push(data.username)
 			client.emit('initialize game', {player: 1})
 			openGame = true
 

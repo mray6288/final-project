@@ -107,7 +107,6 @@ export default class Canvas extends React.Component {
 
 
 	fetchGuesses = () => {
-		console.log(this.state)
 		if (this.props.gameOver){
 			clearInterval(this.interval)
 			return null
@@ -224,7 +223,7 @@ export default class Canvas extends React.Component {
 		<h2>AI Guess: {this.state.guess}</h2>
 		{this.state.otherCanvas}<br/>
 		<canvas id={`canvas-${this.paperSetup._id}`} className={this.state.hasWon ? 'winning-drawing' : (this.isMine ? 'my-drawing' : 'opponent-drawing')} height='370px' width='670px' resize></canvas>
-		<h3>{this.paperSetup._id === this.props.playerId ? 'YOU' : 'OPPONENT'}</h3>
+		<h3>{this.paperSetup._id === this.props.playerId ? `${this.props.username}` : `OPPONENT ${this.props.opponent}`}</h3>
 		{this.isMine ? <button onClick={this.emitClearCanvas}>Clear Canvas</button> : ''}
 		</div>
 	}
