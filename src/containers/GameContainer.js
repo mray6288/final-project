@@ -15,7 +15,8 @@ export default class GameContainer extends React.Component {
 		    timer: 0,
 		    gameOver: false,
 		    gameStarted: false,
-		    player: 0
+		    player: 0,
+		    winnerId: 0
 		}
 
 		this.scope1 = new paper.PaperScope()
@@ -50,7 +51,7 @@ export default class GameContainer extends React.Component {
 	setPlayer(data){
 		console.log('assigned player', data.player)
 		this.setState({
-			
+			winnerId: data.player,
 			player: data.player
 		})
 	}
@@ -64,10 +65,10 @@ export default class GameContainer extends React.Component {
 		clearInterval(this.interval)
 	}
 
-	gameOver = () => { 
+	endGame = () => { 
 		this.endFetch()
 		this.setState({
-		  gameOver: true
+		  gameOver: true,
 		})
 	}
 
@@ -76,8 +77,8 @@ export default class GameContainer extends React.Component {
 				<div className='game-container'> 
 				<h1>Your Goal: {this.state.goal}</h1>
 	        	<h1>Timer: {this.state.timer}</h1>
-				<Canvas playerId={this.state.player} io={this.io} scope={this.scope1} goal={this.state.goal} timer={this.state.timer} gameOver={this.gameOver}/>
-        		<Canvas playerId={this.state.player} io={this.io} scope={this.scope2} goal={this.state.goal} timer={this.state.timer} gameOver={this.gameOver}/>
+				<Canvas gameOver={this.state.gameOver} playerId={this.state.player} io={this.io} scope={this.scope1} goal={this.state.goal} timer={this.state.timer} endGame={this.endGame}/>
+        		<Canvas gameOver={this.state.gameOver} playerId={this.state.player} io={this.io} scope={this.scope2} goal={this.state.goal} timer={this.state.timer} endGame={this.endGame}/>
 				</div>
 			)
 		return (

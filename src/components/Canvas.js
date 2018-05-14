@@ -12,7 +12,6 @@ export default class Canvas extends React.Component {
 		this.state = {
 			guess: '',
 			hasWon: false,
-			gameOver: props.gameOver,
 			
 		}
 		this.isMine = props.scope._id === props.playerId
@@ -108,6 +107,11 @@ export default class Canvas extends React.Component {
 
 
 	fetchGuesses = () => {
+		console.log(this.state)
+		if (this.props.gameOver){
+			clearInterval(this.interval)
+			return null
+		}
 		// console.log(this.vectors[0].length, this.)
 		if (this.vectors[0].length === this.vectorLength){
 			return null
@@ -141,6 +145,7 @@ export default class Canvas extends React.Component {
 		let json = data.json
 
 		let won = false
+		let over = false
 		let guesses = json[1][0][1]
 		let scores = json[1][0][3].debug_info
 		let goalScore = null
@@ -157,12 +162,14 @@ export default class Canvas extends React.Component {
 			}
 			if (guesses[0] === this.props.goal){
 				if (goalScore < 10){
-					this.props.gameOver()
+					console.log('win')
+					this.props.endGame()
+					over = true
 					won = true
 					guesses = [this.props.goal]
-					if (this.isMine){
-						this.io.emit('gameOver')
-					}
+					// if (this.isMine){
+					// 	this.io.emit('gameOver')
+					// }
 					// console.log(json)
 				} else {
 					guesses = [guesses[1]]
@@ -179,7 +186,6 @@ export default class Canvas extends React.Component {
 			this.setState({
 				guess: guesses[0],
 				hasWon: won,
-				gameOver: true,
 			})
 			
 		}
@@ -200,7 +206,6 @@ export default class Canvas extends React.Component {
 			return null
 		}
 		this.paperSetup.project.activeLayer.clear()
-		// if (!this.state.gameOver){
 		this.vectors = [[],[],[]]
 		this.setState({
 			guess: ''
