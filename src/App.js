@@ -9,18 +9,24 @@ class App extends Component {
 
   
   state = {
-    
+    enterGame: false
   }
   
 
 
   
-
+  clickEnterGame = () => {
+    this.setState({
+      enterGame: true
+    })
+  }
   
 
 
 
   render() {
+    let button = <button onClick={this.clickEnterGame} >Enter Game</button>
+    console.log('enter game', this.state.enterGame)
     return (
       <div className="App">
         <header className="App-header">
@@ -30,8 +36,8 @@ class App extends Component {
           
         </header>
         <p>Instructions: Race to draw a picture that the AI can recognize!</p>
+        {this.state.enterGame ? <GameContainer /> : button}
         
-        <GameContainer />
       </div>
     );
   }

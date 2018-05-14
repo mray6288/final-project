@@ -1,13 +1,22 @@
 const io = require('socket.io')()
 
+const goal_options = ['apple','bowtie','circle','hexagon','sword','bike','watermelon','pizza','dog','foot','calculator','smiley face']
+
+
 io.on('connection', (client) => {
   client.on('drawing', (data) => {
     // console.log('client is drawing')
     io.emit('drawing', data)
   }),
   client.on('endPath', (data) => io.emit('endPath', data)),
-  client.on('initialize game', (data) => io.emit('initialize game', data)),
-  client.on('start game', () => io.emit('start game'))
+  client.on('initialize game', () => {
+  	let num_players = Object.keys(io.clients().connected).length
+  	client.emit('initialize game', {player: num_players})
+  	if (num_players === 2){
+  		io.emit('start game', {goal: goal_options[Math.floor(Math.random() * goal_options.length)]})
+  	}
+  })
+  // client.on('start game', () => io.emit('start game', ))
 })
 
 const port = 8000

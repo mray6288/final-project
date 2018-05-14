@@ -4,7 +4,7 @@ import paper from '../../node_modules/paper/dist/paper-core.js'
 import openSocket from 'socket.io-client'
 
 
-const goal_options = ['apple','bowtie','circle','hexagon','sword','bike','watermelon','pizza','dog','foot','calculator','smiley face']
+// const goal_options = ['apple','bowtie','circle','hexagon','sword','bike','watermelon','pizza','dog','foot','calculator','smiley face']
 
 
 export default class GameContainer extends React.Component {
@@ -13,27 +13,44 @@ export default class GameContainer extends React.Component {
 		this.state = {
 			goal: '',
 		    timer: 0,
-		    gameOver: false
+		    gameOver: false,
+		    gameStarted: false,
+		    player: 0
 		}
 
 		this.scope1 = new paper.PaperScope()
 		this.scope2 = new paper.PaperScope()
-		this.io = openSocket('http://localhost:8000')
-		this.io.on('initialize game', this.setGoal.bind(this))
-		this.io.emit('initialize game', {goal: goal_options[Math.floor(Math.random() * goal_options.length)]})
+		this.io = openSocket('http://3f26a47c.ngrok.io')//http://localhost:8000')
+		this.io.on('initialize game', this.setPlayer.bind(this))
+		this.io.emit('initialize game')
+
+		
+
+		this.io.on('start game', this.startGame.bind(this))
+		// console.log('num of players', this.io.sockets.clients().length)
 
 	}
 	
 
-	componentDidMount(){
-		this.interval = setInterval(this.incrementTimer, 1000)
+	// componentDidMount(){
+	// 	this.interval = setInterval(this.incrementTimer, 1000)
 
 		
+	// }
+
+	startGame(data){
+		this.interval = setInterval(this.incrementTimer, 1000)
+		this.setState({
+			goal: data.goal,
+			gameStarted: true
+		})
 	}
 
-	setGoal(data){
+	setPlayer(data){
+		console.log('assigned player', data.player)
 		this.setState({
-			goal: data.goal
+			
+			player: data.player
 		})
 	}
 
@@ -46,7 +63,7 @@ export default class GameContainer extends React.Component {
 		clearInterval(this.interval)
 	}
 
-	gameOver = () => {
+	gameOver = () => { 
 		this.endFetch()
 		this.setState({
 		  gameOver: true
@@ -54,14 +71,18 @@ export default class GameContainer extends React.Component {
 	}
 
 	render() {
-		console.log(this.io)
-		return (
-			<div className='game-container'>
+		let game = (
+				<div className='game-container'> 
 				<h1>Your Goal: {this.state.goal}</h1>
 	        	<h1>Timer: {this.state.timer}</h1>
-				<Canvas io={this.io} scope={this.scope1} goal={this.state.goal} player='1' timer={this.state.timer} gameOver={this.gameOver}/>
-        		<Canvas io={this.io} scope={this.scope2} goal={this.state.goal} player='2' timer={this.state.timer} gameOver={this.gameOver}/>
-			</div>
+				<Canvas playerId={this.state.player} io={this.io} scope={this.scope1} goal={this.state.goal} timer={this.state.timer} gameOver={this.gameOver}/>
+        		<Canvas playerId={this.state.player} io={this.io} scope={this.scope2} goal={this.state.goal} timer={this.state.timer} gameOver={this.gameOver}/>
+				</div>
+			)
+		return (
+				<div>
+				{this.state.gameStarted ? game : 'Waiting for player 2'}
+				</div>
 			)
 	}
 }

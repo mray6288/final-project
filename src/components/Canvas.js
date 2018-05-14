@@ -20,8 +20,6 @@ export default class Canvas extends React.Component {
 		this.time_0 = 0
 		this.vectorLength = 0
 
-		// this.io = openSocket('http://localhost:8000')
-		console.log(props.io)
 		this.io = props.io
 		this.io.on('drawing', this.addPoint.bind(this))
 		this.io.on('endPath', this.endPath.bind(this))
@@ -60,8 +58,7 @@ export default class Canvas extends React.Component {
 	}
 
 	emitDrawing(event){
-		// console.log('paperscope', this.paperSetup._id)
-		// console.log('player', this.props.player)
+
 		this.io.emit('drawing', {point: {x: event.point.x, y: event.point.y}, id: this.paperSetup._id})
 		this.vectors[0].push(event.point.x)
 		this.vectors[1].push(event.point.y)
@@ -76,9 +73,8 @@ export default class Canvas extends React.Component {
 
 	componentDidMount(){
 		this.interval = setInterval(this.fetchGuesses, 1000)
-		console.log('setup player', this.props.player)
-		console.log('setup paperscope', this.paperSetup._id)
-		this.canvas = document.getElementById(`player-${this.props.player}`);
+
+		this.canvas = document.getElementById(`canvas-${this.paperSetup._id}`);
 		
 		this.paperSetup.setup(this.canvas);
 		
@@ -86,15 +82,15 @@ export default class Canvas extends React.Component {
 		this.time_0 = Date.now()
 		
 
-
-		this.tool.onMouseDown = null
-
-		
+		if (this.paperSetup._id === this.props.playerId){
 
 
-		this.tool.onMouseDrag = this.emitDrawing.bind(this)
+			this.tool.onMouseDown = null
 
-		this.tool.onMouseUp = this.emitEndPath.bind(this)
+			this.tool.onMouseDrag = this.emitDrawing.bind(this)
+
+			this.tool.onMouseUp = this.emitEndPath.bind(this)
+		}
 
 		// tool.onResize = function(event) {
 		// 	// Whenever the window is resized, recenter the path:
@@ -113,8 +109,7 @@ export default class Canvas extends React.Component {
 		} else {
 			this.vectorLength = this.vectors[0].length
 		}
-		// console.log('player', this.props.player)
-		// console.log('vectors', this.vectors)
+
 	    let data = {"input_type":0,
 	             "requests":[
 	              {"language":"quickdraw",
@@ -194,12 +189,12 @@ export default class Canvas extends React.Component {
 
 	render() {
 		return <div className='canvas-object'  >
-		<h2 className='winner'>{this.state.hasWon ? `PLAYER ${this.props.player} WINS! ${this.props.timer} SECONDS` : <br/>}</h2>
+		<h2 className='winner'>{this.state.hasWon ? `PLAYER ${this.props.playerId} WINS! ${this.props.timer} SECONDS` : <br/>}</h2>
 		
 		<h2>AI Guess: {this.state.guess}</h2>
 		{this.state.otherCanvas}<br/>
-		<canvas id={`player-${this.props.player}`} className={this.state.hasWon ? 'winning-drawing' : 'drawing'} height='370px' width='670px' resize></canvas>
-		<h3>PLAYER {this.props.player}</h3>
+		<canvas id={`canvas-${this.paperSetup._id}`} className={this.state.hasWon ? 'winning-drawing' : 'drawing'} height='370px' width='670px' resize></canvas>
+		<h3>{this.paperSetup._id === this.props.playerId ? 'YOU' : 'THEM'}</h3>
 		<button onClick={this.clearCanvas}>Clear</button>
 		</div>
 	}
