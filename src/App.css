@@ -30,7 +30,12 @@
 
 canvas {
   border: 2px solid black;
+
+}
+
+.my-drawing {
   cursor: url('http://cursors2.totallyfreecursors.com/thumbnails/pencil.gif'), auto;
+  padding: 10px;
 }
 
 .canvas-object {
@@ -44,7 +49,7 @@ canvas {
   color: green;
 }
 
-.drawing {
+.opponent-drawing {
   padding: 10px;
 }
 

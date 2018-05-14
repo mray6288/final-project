@@ -25,6 +25,7 @@ export default class Canvas extends React.Component {
 		this.io = props.io
 		this.io.on('drawing', this.addPoint.bind(this))
 		this.io.on('endPath', this.endPath.bind(this))
+		this.io.on('clearCanvas', this.clearCanvas.bind(this))
 		this.io.on('setGuess', this.setGuess.bind(this))
 		this.paperSetup = props.scope
 		
@@ -187,11 +188,23 @@ export default class Canvas extends React.Component {
 
 	}
 
-	clearCanvas = () => {
-		this.paperSetup.project.activeLayer.clear()
-		if (!this.state.gameOver){
-			this.vectors = [[],[],[]]
+	emitClearCanvas = () => {
+		// console.log('hello')
+		this.io.emit('clearCanvas', {id: this.paperSetup._id})
+	}
+
+	clearCanvas = (data) => {
+		// console.log(data, this.paperSetup._id)
+		if (data.id !== this.paperSetup._id){
+			return null
 		}
+		this.paperSetup.project.activeLayer.clear()
+		// if (!this.state.gameOver){
+		this.vectors = [[],[],[]]
+		this.setState({
+			guess: ''
+		})
+		// }
 	}
 
 
@@ -204,9 +217,9 @@ export default class Canvas extends React.Component {
 		
 		<h2>AI Guess: {this.state.guess}</h2>
 		{this.state.otherCanvas}<br/>
-		<canvas id={`canvas-${this.paperSetup._id}`} className={this.state.hasWon ? 'winning-drawing' : 'drawing'} height='370px' width='670px' resize></canvas>
+		<canvas id={`canvas-${this.paperSetup._id}`} className={this.state.hasWon ? 'winning-drawing' : (this.isMine ? 'my-drawing' : 'opponent-drawing')} height='370px' width='670px' resize></canvas>
 		<h3>{this.paperSetup._id === this.props.playerId ? 'YOU' : 'OPPONENT'}</h3>
-		<button onClick={this.clearCanvas}>Clear</button>
+		{this.isMine ? <button onClick={this.emitClearCanvas}>Clear Canvas</button> : ''}
 		</div>
 	}
 }

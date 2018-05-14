@@ -26,7 +26,6 @@ class App extends Component {
 
   render() {
     let button = <button onClick={this.clickEnterGame} >Enter Game</button>
-    console.log('enter game', this.state.enterGame)
     return (
       <div className="App">
         <header className="App-header">
