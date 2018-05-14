@@ -9,29 +9,36 @@ var ServerInterval = (function () {
             serverInterval = obj;
             },
             get : function() {
+            	console.log('clearing interval')
                 return serverInterval;
             }
     };
 
 })();
 
-let unmatchedPlayers = null
+let unmatchedPlayer = null
 
 io.on('connection', (client) => {
-	client.on('drawing', (data) => io.emit('drawing', data)),
-	client.on('endPath', (data) => io.emit('endPath', data)),
+	
 	client.on('initialize game', () => {
+		console.log('initializing game')
 		let num_players = Object.keys(io.clients().connected).length
 		clearInterval(ServerInterval.get())
 		client.emit('initialize game', {player: num_players % 2 + 1})
-		if (num_players % 2 === 0){
-			io.emit('start game', {goal: goal_options[Math.floor(Math.random() * goal_options.length)]})
+		if (unmatchedPlayer){
+			goal = goal_options[Math.floor(Math.random() * goal_options.length)]
+			io.emit('start game', {goal: goal})
 			ServerInterval.set(setInterval(() => io.emit('increment timer'), 1000))
+			unmatchedPlayer = null
+		} else {
+			unmatchedPlayer = client
 		}
-	}),
-	client.on('setGuess', (data) => io.emit('setGuess', data)),
-	client.on('gameOver', () => clearInterval(ServerInterval.get())),
-	client.on('clearCanvas', (data) => io.emit('clearCanvas', data))
+		client.on('drawing', (data) => io.emit('drawing', data)),
+		client.on('endPath', (data) => io.emit('endPath', data)),
+		client.on('setGuess', (data) => io.emit('setGuess', data)),
+		client.on('gameOver', () => clearInterval(ServerInterval.get())),
+		client.on('clearCanvas', (data) => io.emit('clearCanvas', data))
+	})
 })
 
 // io.on('disconnect', () => {

@@ -160,6 +160,9 @@ export default class Canvas extends React.Component {
 					this.props.gameOver()
 					won = true
 					guesses = [this.props.goal]
+					if (this.isMine){
+						this.io.emit('gameOver')
+					}
 					// console.log(json)
 				} else {
 					guesses = [guesses[1]]
@@ -178,9 +181,7 @@ export default class Canvas extends React.Component {
 				hasWon: won,
 				gameOver: true,
 			})
-			if (this.isMine){
-				this.io.emit('gameOver')
-			}
+			
 		}
 
 		
