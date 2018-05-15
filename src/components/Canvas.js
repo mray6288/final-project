@@ -11,7 +11,7 @@ export default class Canvas extends React.Component {
 		super()
 		this.state = {
 			guess: '',
-			hasWon: false,
+			// hasWon: false,
 			
 		}
 		this.isMine = props.scope._id === props.playerId
@@ -184,7 +184,7 @@ export default class Canvas extends React.Component {
 			// }
 			this.setState({
 				guess: guesses[0],
-				hasWon: won,
+				// hasWon: won,
 			})
 			
 		}
@@ -213,12 +213,14 @@ export default class Canvas extends React.Component {
 	}
 
 
-
+	isWinner() {
+		return this.props.winnerId === this.props.playerId
+	}
 
 
 	render() {
 		return <div className='canvas-object'  >
-		<h2 className='winner'>{this.state.hasWon ? (this.isMine ? 'YOU WIN!' : 'OPPONENT WINS!') + ` ${this.props.timer} SECONDS` : <br/>}</h2>
+		<h2 className='winner'>{this.isWinner() ? (this.isMine ? 'YOU WIN!' : 'OPPONENT WINS!') + ` ${this.props.timer} SECONDS` : <br/>}</h2>
 		
 		<h2>AI Guess: {this.state.guess}</h2>
 		{this.state.otherCanvas}<br/>
