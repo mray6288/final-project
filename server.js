@@ -23,6 +23,7 @@ var ServerInterval = (function () {
 let gameId = 1
 // let usernames = []
 let gameRooms = {}
+let rematches = {}
 
 io.on('connection', (client) => {
 	console.log('rooms at connect', gameRooms)
@@ -63,16 +64,20 @@ io.on('connection', (client) => {
 		// client.on('gameOver', () => clearInterval(thisInterval)),
 		client.on('clearCanvas', (data) => io.to(thisGame).emit('clearCanvas', data))
 		client.on('playAgain', () => {
-			console.log('playing again', clientData.username)
-			if (gameRooms[thisGame].length > 0){
+			if (!rematches[gameId]){
+				rematches[gameId] = 1
+			} else {
+				rematches[gameId] = 2
+			}
+			console.log('playing again', clientData.username, rematches)
+			if (rematches[gameId] === 2){
+				console.log('rematch')
 				gameRooms[thisGame].push(clientData.username)
 				goal = goal_options[Math.floor(Math.random() * goal_options.length)]
 				io.to(thisGame).emit('start game', {goal: goal, usernames: gameRooms[thisGame]})
+				rematches[gameId] = 0
 				// gameRooms[thisGame] = []
-				// io.to(thisGame).emit('clearCanvas', {id: 1})
-				// io.to(thisGame).emit('clearCanvas', {id: 2})
-			} else {
-				gameRooms[thisGame] = [clientData.username]
+
 			}
 		})
 		client.on('disconnect', () => {

@@ -236,12 +236,12 @@ class Canvas extends React.Component {
 	render() {
 
 		return <div className='canvas-object'  >
-		<h2 className='winner'>{this.isWinner() ? (this.isMine ? `YOU WIN! ${this.props.timer} SECONDS` : `OPPONENT WINS! ${this.props.timer+1} SECONDS`) : <br/>}</h2>
+		<h2 className='winner'>{this.isWinner() ? (this.isMine ? `${this.props.username} WINS! ${this.props.timer} SECONDS` : `${this.props.opponent} WINS! ${this.props.timer+1} SECONDS`) : <br/>}</h2>
 		
 		<h2>AI Guess: {this.state.guess}</h2>
 		{this.state.otherCanvas}<br/>
 		<canvas id={`canvas-${this.canvasId}`} className={this.isWinner() ? 'winning-drawing' : (this.isMine ? 'my-drawing' : 'opponent-drawing')} height='370px' width='670px' resize></canvas>
-		<h3>{this.canvasId === this.props.playerId ? `${this.props.username}` : `OPPONENT ${this.props.opponent}`}</h3>
+		<h3>{this.canvasId === this.props.playerId ? `${this.props.username}` : `${this.props.opponent}`}</h3>
 		{this.isMine ? <button onClick={this.emitClearCanvas}>Clear Canvas</button> : ''}
 		</div>
 	}

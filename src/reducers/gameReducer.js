@@ -47,7 +47,12 @@ export default function(state = defaultState, action){
 				scoreboard: state.scoreboard
 				})
 		case 'SPECTATE_GAME':
-			break
+			return Object.assign({}, state, {
+				goal: action.data.goal,
+				username: action.data.usernames[0],
+				opponent: action.data.usernames[1],
+				playerId: 3
+			})
 		case 'INCREMENT_TIMER':
 			return Object.assign({}, state, {timer: state.timer + 1})
 		case 'END_GAME':

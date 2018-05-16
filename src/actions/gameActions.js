@@ -27,6 +27,13 @@ export const startGame = (data) => {
 	}
 }
 
+export const spectateGame = (data) => {
+	return {
+		type: 'SPECTATE_GAME',
+		data
+	}
+}
+
 export const incrementTimer = () => {
 	return {
 		type: 'INCREMENT_TIMER',
