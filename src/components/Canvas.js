@@ -27,6 +27,7 @@ export default class Canvas extends React.Component {
 		this.io.on('clearCanvas', this.clearCanvas.bind(this))
 		this.io.on('setGuess', this.setGuess.bind(this))
 		this.paperSetup = props.scope
+
 		
 	}
 
@@ -219,6 +220,7 @@ export default class Canvas extends React.Component {
 
 
 	render() {
+		debugger
 		return <div className='canvas-object'  >
 		<h2 className='winner'>{this.isWinner() ? (this.isMine ? 'YOU WIN!' : 'OPPONENT WINS!') + ` ${this.props.timer} SECONDS` : <br/>}</h2>
 		

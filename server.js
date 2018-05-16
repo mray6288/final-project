@@ -26,10 +26,11 @@ io.on('connection', (client) => {
 		// clearInterval(ServerInterval.get())
 		let thisGame = `game-${gameId}`
 		client.join(thisGame)	
-		console.log('initializing', data.username, 'in gameId', gameId)
+		let playerId = 0
 		if (usernames.length > 0){
 			usernames.push(data.username)
-			client.emit('initialize game', {player: 2})
+			playerId = 2
+			client.emit('initialize game', {playerId: playerId})
 			goal = goal_options[Math.floor(Math.random() * goal_options.length)]
 			io.to(thisGame).emit('start game', {goal: goal, usernames: usernames})
 			// let thisInterval = setInterval(() => io.to(thisGame).emit('increment timer'), 1000)
@@ -37,11 +38,13 @@ io.on('connection', (client) => {
 			gameId++
 			usernames = []
 		} else {
+			playerId = 1
 			usernames.push(data.username)
-			client.emit('initialize game', {player: 1})
+			client.emit('initialize game', {playerId: playerId})
 			openGame = true
 
 		}
+		console.log('initializing', data.username, 'in gameId', gameId, 'as player', playerId)
 		client.on('drawing', (data) => io.to(thisGame).emit('drawing', data)),
 		client.on('endPath', (data) => io.to(thisGame).emit('endPath', data)),
 		client.on('setGuess', (data) => io.to(thisGame).emit('setGuess', data)),

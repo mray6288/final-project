@@ -4,7 +4,7 @@ import paper from '../../node_modules/paper/dist/paper-core.js'
 // import openSocket from 'socket.io-client'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
-import { startGame } from '../actions/gameActions'
+import { startGame, incrementTimer, endGameState } from '../actions/gameActions'
 
 
 class GameContainer extends React.Component {
@@ -24,9 +24,9 @@ class GameContainer extends React.Component {
 		this.scope2._id = 2
 		// console.log('new io socket')
 		// this.props.io = openSocket('https://3f26a47c.ngrok.io')//http://localhost:8000')
-		props.io.on('initialize game', this.setPlayer.bind(this))
+		props.io.on('initialize game', (data) => this.playerId = data.playerId)
 		props.io.emit('initialize game', {username: props.username})
-		props.io.on('increment timer', this.incrementTimer.bind(this))
+		// props.io.on('increment timer', this.incrementTimer.bind(this))
 
 		
 
@@ -43,10 +43,9 @@ class GameContainer extends React.Component {
 	// }
 
 	startGame(data){
-		debugger
 		// console.log('data', data)
-		this.props.startGame(data)
-		this.interval = setInterval(this.incrementTimer, 1000)
+		this.props.startGame(Object.assign({}, data, {playerId: this.playerId}))
+		this.interval = setInterval(this.props.incrementTimer, 1000)
 
 		// if (data.usernames[0] === this.props.username){
 		// 	this.opponent = data.usernames[1]
@@ -60,41 +59,42 @@ class GameContainer extends React.Component {
 		// })
 	}
 
-	setPlayer(data){
-		this.setState({
-			winnerId: data.player,
-			player: data.player
-		})
-	}
+	// setPlayer(data){
+	// 	this.setState({
+	// 		winnerId: data.player,
+	// 		player: data.player
+	// 	})
+	// }
 
-	incrementTimer = () => {
-		this.setState({timer:this.state.timer + 1})
-	}
+	// incrementTimer = () => {
+	// 	this.setState({timer:this.state.timer + 1})
+	// }
 
-	endFetch() {
+	endTimer() {
 		clearInterval(this.interval)
 	}
 
 	endGame = () => { 
-		this.endFetch()
-		this.props.io.close()
-		this.setState({
-		  gameOver: true,
-		})
+		this.endTimer()
+		// this.props.io.close()
+		this.props.endGameState()
+		// this.setState({
+		//   gameOver: true,
+		// })
 	}
 
 	render() {
 		// console.log('scope1', this.scope1)
 		// console.log('scope2', this.scope2)
 		// console.log('username', this.props)
-		// console.log('container state', this.state, this.opponent)
+		// console.log('playerId', this.props.username, this.playerId)
 		let game = (
 				<div className='game-container'> 
-				<h1>Your Goal: {this.state.goal}</h1>
-	        	<h1>{this.state.gameOver ? <button onClick={this.props.newGame}>New Game</button> : `Timer: ${this.state.timer}`}</h1>
+				<h1>Your Goal: {this.props.goal}</h1>
+	        	<h1>{this.props.gameOver ? <button onClick={this.props.newGame}>New Game</button> : `Timer: ${this.props.timer}`}</h1>
 
-				<Canvas username={this.props.username} opponent={this.opponent} gameOver={this.state.gameOver} playerId={this.state.player} io={this.props.io} scope={this.scope1} goal={this.state.goal} timer={this.state.timer} endGame={this.endGame}/>
-        		<Canvas username={this.props.username} opponent={this.opponent} gameOver={this.state.gameOver} playerId={this.state.player} io={this.props.io} scope={this.scope2} goal={this.state.goal} timer={this.state.timer} endGame={this.endGame}/>
+				<Canvas username={this.props.username} opponent={this.props.opponent} gameOver={this.props.gameOver} playerId={this.playerId} io={this.props.io} scope={this.scope1} goal={this.props.goal} timer={this.props.timer} endGame={this.endGame}/>
+        		<Canvas username={this.props.username} opponent={this.props.opponent} gameOver={this.props.gameOver} playerId={this.playerId} io={this.props.io} scope={this.scope2} goal={this.props.goal} timer={this.props.timer} endGame={this.endGame}/>
 				</div>
 			)
 		return (
@@ -118,7 +118,9 @@ function mapStateToProps(state){
 
 function mapDispatchToProps(dispatch){
 	return bindActionCreators({
-		startGame: startGame
+		startGame: startGame,
+		incrementTimer: incrementTimer,
+		endGameState: endGameState
 	}, dispatch)
 }
 

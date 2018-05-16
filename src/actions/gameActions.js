@@ -11,3 +11,15 @@ export const startGame = (data) => {
 		data
 	}
 }
+
+export const incrementTimer = () => {
+	return {
+		type: 'INCREMENT_TIMER',
+	}
+}
+
+export const endGameState = () => {
+	return {
+		type: 'END_GAME',
+	}
+}

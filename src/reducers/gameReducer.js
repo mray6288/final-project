@@ -26,8 +26,14 @@ export default function(state = defaultState, action){
 			return Object.assign({}, state, {
 				goal: action.data.goal,
 				timer: 0,
-				opponent: opponent
+				opponent: opponent,
+				playerId: action.data.playerId
 				})
+		case 'INCREMENT_TIMER':
+			return Object.assign({}, state, {timer: state.timer + 1})
+		case 'END_GAME':
+			state.io.close()
+			return Object.assign({}, state, {gameOver: true})
 		default:
 			return state
 
