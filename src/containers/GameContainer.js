@@ -25,8 +25,8 @@ class GameContainer extends React.Component {
 
 		// console.log('new io socket')
 		// this.props.io = openSocket('https://3f26a47c.ngrok.io')//http://localhost:8000')
-		props.io.on('initialize game', (data) => this.playerId = data.playerId)
-		props.io.emit('initialize game', {username: props.username})
+		// props.io.on('initialize game', (data) => this.playerId = data.playerId)
+		// props.io.emit('initialize game', {username: props.username})
 		// props.io.on('increment timer', this.incrementTimer.bind(this))
 
 
@@ -44,7 +44,7 @@ class GameContainer extends React.Component {
 
 	startGame(data){
 		// console.log('data', data)
-		this.props.startGame(Object.assign({}, data, {playerId: this.playerId}))
+		this.props.startGame(data)
 		this.interval = setInterval(this.props.incrementTimer, 1000)
 
 		// if (data.usernames[0] === this.props.username){

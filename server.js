@@ -26,6 +26,7 @@ let gameRooms = {}
 
 io.on('connection', (client) => {
 	console.log('rooms at connect', gameRooms)
+	client.emit('game rooms', gameRooms)
 	client.on('initialize game', (clientData) => {
 		// let num_players = Object.keys(io.clients().connected).length
 		// clearInterval(ServerInterval.get())
@@ -47,12 +48,12 @@ io.on('connection', (client) => {
 			playerId = 2
 			client.emit('initialize game', {playerId: playerId})
 			goal = goal_options[Math.floor(Math.random() * goal_options.length)]
-			io.to(thisGame).emit('start game', {goal: goal, usernames: gameRooms[thisGame]})
+			io.to(thisGame).emit('start game', {goal: goal, playerId: playerId, usernames: gameRooms[thisGame]})
 			
 			// let thisInterval = setInterval(() => io.to(thisGame).emit('increment timer'), 1000)
 			console.log('initializing', clientData.username, 'in gameId', gameId, 'as player', playerId)
 			gameId++
-			gameRooms[thisGame] = []
+			// gameRooms[thisGame] = []
 		}  
 		else {
 			playerId = 3
@@ -71,14 +72,24 @@ io.on('connection', (client) => {
 				gameRooms[thisGame].push(clientData.username)
 				goal = goal_options[Math.floor(Math.random() * goal_options.length)]
 				io.to(thisGame).emit('start game', {goal: goal, usernames: gameRooms[thisGame]})
-				gameRooms[thisGame] = []
+				// gameRooms[thisGame] = []
 				// io.to(thisGame).emit('clearCanvas', {id: 1})
 				// io.to(thisGame).emit('clearCanvas', {id: 2})
 			} else {
-				gameRooms[thisGame].push(clientData.username)
+				gameRooms[thisGame] = [clientData.username]
 			}
 		})
-		client.on('disconnect', () => usernames = gameRooms[thisGame].filter(name => name !== clientData.username))
+		client.on('disconnect', () => {
+			console.log('this game', thisGame)
+			console.log('game rooms', gameRooms)
+			console.log('username', clientData.username)
+			gameRooms[thisGame] = gameRooms[thisGame].filter(name => name !== clientData.username)
+			
+			if (gameRooms[thisGame].length === 0){
+				delete gameRooms[thisGame]
+			}
+			console.log('updated game rooms', gameRooms)
+		})
 	})
 })
 

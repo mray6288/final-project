@@ -5,6 +5,14 @@ export const login = (username) => {
 	}
 }
 
+export const updateRooms = (rooms) => {
+	console.log('actions rooms', rooms)
+	return {
+		type: 'UPDATE_ROOMS',
+		rooms
+	}
+}
+
 export const enterGame = () => {
   return {
     type: 'ENTER_GAME',

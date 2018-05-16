@@ -14,6 +14,9 @@ export default function(state = defaultState, action){
 				playerId,
 				io,
 			})
+		case 'UPDATE_ROOMS':
+			console.log('UPDATE ROOMS ACTION', action)
+			return Object.assign({}, state, {openRooms: action.rooms})
 		case 'ENTER_GAME':
 			
 			gameKey++
@@ -40,6 +43,8 @@ export default function(state = defaultState, action){
 				playerId: action.data.playerId,
 				scoreboard: state.scoreboard
 				})
+		case 'SPECTATE_GAME':
+			break
 		case 'INCREMENT_TIMER':
 			return Object.assign({}, state, {timer: state.timer + 1})
 		case 'END_GAME':
