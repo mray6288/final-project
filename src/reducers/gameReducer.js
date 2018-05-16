@@ -23,8 +23,8 @@ export default function(state = defaultState, action){
 			} else {
 				opponent = action.data.usernames[0]
 			}
-			if (!state.scoreboard[state.username]){
-				console.log('resetting scoreboard')
+			if (state.scoreboard[state.username] === undefined){
+				console.log('resetting scoreboard', state.scoreboard, state.username)
 				state.scoreboard[state.username] = 0
 				state.scoreboard[opponent] = 0
 			}
@@ -66,7 +66,7 @@ export default function(state = defaultState, action){
 				gameOver: false,
 				timer: 0,
 				winnerId: null,
-				goal: ''
+				goal: 'waiting for opponent'
 			})
 		default:
 			return state

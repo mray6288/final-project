@@ -68,7 +68,7 @@ class Canvas extends React.Component {
 	}
 
 	emitDrawing(event){
-		if (this.props.gameOver || this.props.goal === ''){
+		if (this.props.gameOver || this.props.goal === 'waiting for opponent'){
 			return null
 		}
 
