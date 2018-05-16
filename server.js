@@ -2,7 +2,7 @@ const io = require('socket.io')()
 
 const goal_options = ['apple','bowtie','circle','hexagon','sword','watermelon','dog','foot',
 	'butterfly','chair','clock','fish','door','panda','pizza','television','sun',
-	'mushroom','eye','eyeglasses','hockey stick','dumbbell','shoe','stop sign',
+	'mushroom','eye','hockey stick','dumbbell','shoe','stop sign',
 	'snowman','snowflake','table','tooth','saxophone','star','boomerang','broom',
 	'baseball','baseball bat','golf club']
 
