@@ -68,6 +68,9 @@ class Canvas extends React.Component {
 	}
 
 	emitDrawing(event){
+		if (this.props.gameOver || this.props.goal === ''){
+			return null
+		}
 
 		this.io.emit('drawing', {point: {x: event.point.x, y: event.point.y}, id: this.canvasId})
 		this.vectors[0].push(event.point.x)
@@ -112,8 +115,8 @@ class Canvas extends React.Component {
 	}
 
 	componentDidUpdate(prevProps){
-		console.log('previous', prevProps)
-		console.log('new', this.props)
+		// console.log('previous', prevProps)
+		// console.log('new', this.props)
 		if (prevProps.gameOver && !this.props.gameOver){
 
 
@@ -219,8 +222,6 @@ class Canvas extends React.Component {
 	}
 
 	clearCanvas = (data) => {
-		console.log('clearing', data, this.canvasId)
-		debugger
 		if (data.id !== this.canvasId){
 			return null
 		}

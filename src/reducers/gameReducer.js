@@ -23,19 +23,41 @@ export default function(state = defaultState, action){
 			} else {
 				opponent = action.data.usernames[0]
 			}
+			if (!state.scoreboard[state.username]){
+				console.log('resetting scoreboard')
+				state.scoreboard[state.username] = 0
+				state.scoreboard[opponent] = 0
+			}
 			return Object.assign({}, state, {
 				goal: action.data.goal,
 				timer: 0,
 				opponent: opponent,
-				playerId: action.data.playerId
+				playerId: action.data.playerId,
+				scoreboard: state.scoreboard
 				})
 		case 'INCREMENT_TIMER':
 			return Object.assign({}, state, {timer: state.timer + 1})
 		case 'END_GAME':
-			// state.io.close()
+			// let winner = ''
+			let scoreboard = {}
+			if (action.winnerId === state.playerId){
+				scoreboard[state.username] = state.scoreboard[state.username] + 1
+				scoreboard[state.opponent] = state.scoreboard[state.opponent]
+				// winner = state.username
+				// state.scoreboard[state.username] = state.scoreboard[state.username] + 1
+			} else {
+				scoreboard[state.username] = state.scoreboard[state.username]
+				scoreboard[state.opponent] = state.scoreboard[state.opponent] + 1
+				// winner = state.opponent
+				// state.scoreboard[state.opponent] = state.scoreboard[state.opponent] + 1
+			}
+
+			console.log('NEW SCOREBOARD', state.scoreboard, scoreboard)
 			return Object.assign({}, state, {
 				gameOver: true,
-				winnerId: action.winnerId
+				winnerId: action.winnerId,
+				scoreboard: scoreboard,
+				// goal: ''
 			})
 		case 'PLAY_AGAIN':
 			gameKey++
@@ -43,7 +65,8 @@ export default function(state = defaultState, action){
 				gameKey,
 				gameOver: false,
 				timer: 0,
-				winnerId: null
+				winnerId: null,
+				goal: ''
 			})
 		default:
 			return state

@@ -5,7 +5,7 @@ import paper from '../../node_modules/paper/dist/paper-core.js'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
 import { startGame, incrementTimer, endGameState, playAgain } from '../actions/gameActions'
-
+import { ConnectedScoreboard } from '../components/Scoreboard'
 
 class GameContainer extends React.Component {
 	constructor(props){
@@ -98,7 +98,7 @@ class GameContainer extends React.Component {
 	render() {
 		// console.log('scope1', this.scope1)
 		// console.log('scope2', this.scope2)
-		console.log('username', this.props)
+		// console.log('username', this.props)
 		// console.log('playerId', this.props.username, this.playerId)
 		
 		// <Canvas username={this.props.username} opponent={this.props.opponent} gameOver={this.props.gameOver} playerId={this.playerId} io={this.props.io} scope={this.scope1} goal={this.props.goal} timer={this.props.timer} endGame={this.endGame}/>
@@ -117,6 +117,7 @@ class GameContainer extends React.Component {
 
 		let game = (
 				<div className='game-container'> 
+				<ConnectedScoreboard />
 				<h1>Your Goal: {this.props.goal}</h1>
 	        	<h1>{this.props.gameOver ? <button onClick={this.playAgain}>Play Again</button> : `Timer: ${this.props.timer}`}</h1>
 

@@ -8,4 +8,5 @@ export const defaultState = {
 	winnerId: null,
 	username: null,
 	opponent: null,
+	scoreboard: {}
 }

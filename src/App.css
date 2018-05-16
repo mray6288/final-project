@@ -58,3 +58,16 @@ canvas {
   padding: 2px;
   border: 10px solid green;
 }
+
+.scoreboard-container {
+  position: absolute;
+  z-index: 5;
+  margin-top: -50px;
+  margin-left: 20px;
+}
+
+.scoreboard {
+  position: absolute;
+  border: 6px solid black;
+  min-width: 125px;
+}
