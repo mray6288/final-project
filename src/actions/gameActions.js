@@ -1,7 +1,14 @@
-export const enterGame = (username) => {
+export const login = (username) => {
+	return {
+		type: 'LOGIN',
+		username
+	}
+}
+
+export const enterGame = () => {
   return {
     type: 'ENTER_GAME',
-    username
+    
   };
 };
 
@@ -31,3 +38,5 @@ export const playAgain = (guess) => {
 		guess
 	}
 }
+
+

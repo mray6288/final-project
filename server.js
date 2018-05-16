@@ -51,8 +51,8 @@ io.on('connection', (client) => {
 			
 			// let thisInterval = setInterval(() => io.to(thisGame).emit('increment timer'), 1000)
 			console.log('initializing', clientData.username, 'in gameId', gameId, 'as player', playerId)
-			// THIS TO WORK gameId++
-			// THIS TO WORK gameRooms[thisGame] = []
+			gameId++
+			gameRooms[thisGame] = []
 		}  
 		else {
 			playerId = 3

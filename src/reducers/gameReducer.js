@@ -6,15 +6,21 @@ let playerId = 0
 
 export default function(state = defaultState, action){
 	switch(action.type){
-		case 'ENTER_GAME':
+		case 'LOGIN':
 			playerId++
-			gameKey++
 			let io = openSocket('https://3f26a47c.ngrok.io')
 			return Object.assign({}, state, {
-				gameKey, 
-				io,
 				username: action.username,
-				playerId
+				playerId,
+				io,
+			})
+		case 'ENTER_GAME':
+			
+			gameKey++
+			
+			return Object.assign({}, state, {
+				gameKey, 
+				
 			})
 		case 'START_GAME':
 			let opponent = null

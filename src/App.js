@@ -3,7 +3,9 @@ import './App.css';
 import { ConnectedGameContainer } from './containers/GameContainer'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
-import { enterGame } from './actions/gameActions'
+import { login } from './actions/gameActions'
+import { ConnectedLobby } from './containers/Lobby'
+
 
 
 
@@ -20,7 +22,8 @@ class App extends Component {
   
   submitUsername = (e) => {
     e.preventDefault()
-    this.props.enterGame(e.target.username.value)
+    this.props.login(e.target.username.value)
+    // this.props.enterGame(e.target.username.value)
     // debugger
     // this.setState({
     //   enterGame: true,
@@ -40,7 +43,7 @@ class App extends Component {
 
 
   render() {
-    // console.log('app props at render', this.props)
+    console.log('app props at render', this.props)
     // console.log(this.state)
     let button = (
       <form onSubmit={this.submitUsername}>
@@ -59,7 +62,8 @@ class App extends Component {
         </header>
         <p>Instructions: Race to draw a picture that the AI can recognize!</p>
         
-        {this.props.gameKey ? <ConnectedGameContainer newGame={this.newGame}/> : button}
+        {this.props.gameKey ? <ConnectedGameContainer newGame={this.newGame}/> 
+        : (this.props.username ? <ConnectedLobby /> : button)}
         
       </div>
     );
@@ -74,7 +78,7 @@ function mapStateToProps(state){
 
 function mapDispatchToProps(dispatch){
   return bindActionCreators({
-      enterGame: enterGame
+      login: login
     },
     dispatch
   )
