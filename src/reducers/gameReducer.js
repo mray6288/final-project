@@ -32,8 +32,19 @@ export default function(state = defaultState, action){
 		case 'INCREMENT_TIMER':
 			return Object.assign({}, state, {timer: state.timer + 1})
 		case 'END_GAME':
-			state.io.close()
-			return Object.assign({}, state, {gameOver: true})
+			// state.io.close()
+			return Object.assign({}, state, {
+				gameOver: true,
+				winnerId: action.winnerId
+			})
+		case 'PLAY_AGAIN':
+			gameKey++
+			return Object.assign({}, state, {
+				gameKey,
+				gameOver: false,
+				timer: 0,
+				winnerId: null
+			})
 		default:
 			return state
 

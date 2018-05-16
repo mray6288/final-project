@@ -1,10 +1,10 @@
 import React from 'react'
-import Canvas from '../components/Canvas'
+import { ConnectedCanvas } from '../components/Canvas'
 import paper from '../../node_modules/paper/dist/paper-core.js'
 // import openSocket from 'socket.io-client'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
-import { startGame, incrementTimer, endGameState } from '../actions/gameActions'
+import { startGame, incrementTimer, endGameState, playAgain } from '../actions/gameActions'
 
 
 class GameContainer extends React.Component {
@@ -74,13 +74,21 @@ class GameContainer extends React.Component {
 		clearInterval(this.interval)
 	}
 
-	endGame = () => { 
+	endGame = (winnerId) => { 
 		this.endTimer()
 		// this.props.io.close()
-		this.props.endGameState()
+		this.props.endGameState(winnerId)
 		// this.setState({
 		//   gameOver: true,
 		// })
+	}
+
+	playAgain = () => {
+		this.scope1 = new paper.PaperScope()
+		this.scope2 = new paper.PaperScope()
+		this.scope1._id = 1
+		this.scope2._id = 2
+		this.props.playAgain()
 	}
 
 	render() {
@@ -88,13 +96,17 @@ class GameContainer extends React.Component {
 		// console.log('scope2', this.scope2)
 		// console.log('username', this.props)
 		// console.log('playerId', this.props.username, this.playerId)
+		
+		// <Canvas username={this.props.username} opponent={this.props.opponent} gameOver={this.props.gameOver} playerId={this.playerId} io={this.props.io} scope={this.scope1} goal={this.props.goal} timer={this.props.timer} endGame={this.endGame}/>
+        // <Canvas username={this.props.username} opponent={this.props.opponent} gameOver={this.props.gameOver} playerId={this.playerId} io={this.props.io} scope={this.scope2} goal={this.props.goal} timer={this.props.timer} endGame={this.endGame}/>
+
 		let game = (
 				<div className='game-container'> 
 				<h1>Your Goal: {this.props.goal}</h1>
-	        	<h1>{this.props.gameOver ? <button onClick={this.props.newGame}>New Game</button> : `Timer: ${this.props.timer}`}</h1>
+	        	<h1>{this.props.gameOver ? <button onClick={this.playAgain}>Play Again</button> : `Timer: ${this.props.timer}`}</h1>
 
-				<Canvas username={this.props.username} opponent={this.props.opponent} gameOver={this.props.gameOver} playerId={this.playerId} io={this.props.io} scope={this.scope1} goal={this.props.goal} timer={this.props.timer} endGame={this.endGame}/>
-        		<Canvas username={this.props.username} opponent={this.props.opponent} gameOver={this.props.gameOver} playerId={this.playerId} io={this.props.io} scope={this.scope2} goal={this.props.goal} timer={this.props.timer} endGame={this.endGame}/>
+				<ConnectedCanvas scope={this.scope1} endGame={this.endGame} />
+				<ConnectedCanvas scope={this.scope2} endGame={this.endGame} />
 				</div>
 			)
 		return (
@@ -120,7 +132,8 @@ function mapDispatchToProps(dispatch){
 	return bindActionCreators({
 		startGame: startGame,
 		incrementTimer: incrementTimer,
-		endGameState: endGameState
+		endGameState: endGameState,
+		playAgain: playAgain
 	}, dispatch)
 }
 

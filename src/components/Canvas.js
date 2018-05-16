@@ -1,4 +1,7 @@
 import React from 'react'
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux'
+import { setGuess } from '../actions/gameActions'
 
 
 const URL = 'https://inputtools.google.com/request?ime=handwriting&app=quickdraw&dbg=1&cs=1&oe=UTF-8'
@@ -6,7 +9,7 @@ const URL = 'https://inputtools.google.com/request?ime=handwriting&app=quickdraw
 
 
 
-export default class Canvas extends React.Component {
+class Canvas extends React.Component {
 	constructor(props){
 		super()
 		this.state = {
@@ -14,12 +17,13 @@ export default class Canvas extends React.Component {
 			// hasWon: false,
 			
 		}
-		this.isMine = props.scope._id === props.playerId
+		
 		this.tool = null
 		this.path = null
 		this.vectors = [[],[],[]]
 		this.time_0 = 0
 		this.vectorLength = 0
+
 
 		this.io = props.io
 		this.io.on('drawing', this.addPoint.bind(this))
@@ -27,6 +31,8 @@ export default class Canvas extends React.Component {
 		this.io.on('clearCanvas', this.clearCanvas.bind(this))
 		this.io.on('setGuess', this.setGuess.bind(this))
 		this.paperSetup = props.scope
+		this.canvasId = props.scope._id
+		this.isMine = this.canvasId === props.playerId
 
 		
 	}
@@ -35,7 +41,7 @@ export default class Canvas extends React.Component {
 
 
 	addPoint(data){
-		if (data.id !== this.paperSetup._id){
+		if (data.id !== this.canvasId){
 			return null
 		} else {
 			this.paperSetup.activate()
@@ -53,7 +59,7 @@ export default class Canvas extends React.Component {
 	}
 
 	endPath(data){
-		if (data.id !== this.paperSetup._id){
+		if (data.id !== this.canvasId){
 			return null
 		} else {
 			this.paperSetup.activate()
@@ -63,7 +69,7 @@ export default class Canvas extends React.Component {
 
 	emitDrawing(event){
 
-		this.io.emit('drawing', {point: {x: event.point.x, y: event.point.y}, id: this.paperSetup._id})
+		this.io.emit('drawing', {point: {x: event.point.x, y: event.point.y}, id: this.canvasId})
 		this.vectors[0].push(event.point.x)
 		this.vectors[1].push(event.point.y)
 		this.vectors[2].push(Date.now() - this.time_0)
@@ -71,14 +77,14 @@ export default class Canvas extends React.Component {
 
 	emitEndPath(){
 
-		// console.log('ending path on', this.paperSetup._id)
-		this.io.emit('endPath', {id: this.paperSetup._id})
+		// console.log('ending path on', this.canvasId)
+		this.io.emit('endPath', {id: this.canvasId})
 	}
 
 	componentDidMount(){
 		
 
-		this.canvas = document.getElementById(`canvas-${this.paperSetup._id}`);
+		this.canvas = document.getElementById(`canvas-${this.canvasId}`);
 		
 		this.paperSetup.setup(this.canvas);
 		
@@ -134,12 +140,12 @@ export default class Canvas extends React.Component {
 	        'Content-Type':'application/json'
 	      },
 	      body: JSON.stringify(data)
-	    }).then(r=>r.json()).then(json=>this.io.emit('setGuess', {json: json, id:this.paperSetup._id}))
+	    }).then(r=>r.json()).then(json=>this.io.emit('setGuess', {json: json, id:this.canvasId}))
 
 	}
 
 	setGuess(data) {
-		if (data.id !== this.paperSetup._id){
+		if (data.id !== this.canvasId){
 			return null
 		}
 		let json = data.json
@@ -163,7 +169,7 @@ export default class Canvas extends React.Component {
 			if (guesses[0] === this.props.goal){
 				if (goalScore < 10){
 					console.log('win')
-					this.props.endGame()
+					this.props.endGame(this.canvasId)
 					over = true
 					won = true
 					guesses = [this.props.goal]
@@ -197,12 +203,12 @@ export default class Canvas extends React.Component {
 
 	emitClearCanvas = () => {
 		// console.log('hello')
-		this.io.emit('clearCanvas', {id: this.paperSetup._id})
+		this.io.emit('clearCanvas', {id: this.canvasId})
 	}
 
 	clearCanvas = (data) => {
-		// console.log(data, this.paperSetup._id)
-		if (data.id !== this.paperSetup._id){
+		// console.log(data, this.canvasId)
+		if (data.id !== this.canvasId){
 			return null
 		}
 		this.paperSetup.project.activeLayer.clear()
@@ -215,20 +221,42 @@ export default class Canvas extends React.Component {
 
 
 	isWinner() {
-		return this.props.winnerId === this.props.playerId
+		return this.props.winnerId === this.canvasId
 	}
 
 
 	render() {
-		debugger
+		if (this.props.gameOver){
+			debugger
+		}
 		return <div className='canvas-object'  >
-		<h2 className='winner'>{this.isWinner() ? (this.isMine ? 'YOU WIN!' : 'OPPONENT WINS!') + ` ${this.props.timer} SECONDS` : <br/>}</h2>
+		<h2 className='winner'>{this.isWinner() ? (this.isMine ? `YOU WIN! ${this.props.timer} SECONDS` : `OPPONENT WINS! ${this.props.timer+1} SECONDS`) : <br/>}</h2>
 		
 		<h2>AI Guess: {this.state.guess}</h2>
 		{this.state.otherCanvas}<br/>
-		<canvas id={`canvas-${this.paperSetup._id}`} className={this.state.hasWon ? 'winning-drawing' : (this.isMine ? 'my-drawing' : 'opponent-drawing')} height='370px' width='670px' resize></canvas>
-		<h3>{this.paperSetup._id === this.props.playerId ? `${this.props.username}` : `OPPONENT ${this.props.opponent}`}</h3>
+		<canvas id={`canvas-${this.canvasId}`} className={this.isWinner() ? 'winning-drawing' : (this.isMine ? 'my-drawing' : 'opponent-drawing')} height='370px' width='670px' resize></canvas>
+		<h3>{this.canvasId === this.props.playerId ? `${this.props.username}` : `OPPONENT ${this.props.opponent}`}</h3>
 		{this.isMine ? <button onClick={this.emitClearCanvas}>Clear Canvas</button> : ''}
 		</div>
 	}
 }
+
+function mapStateToProps(state){
+	return {io: state.io,
+		 	goal: state.goal,
+		 	timer: state.timer,
+		 	gameOver: state.gameOver,
+		 	opponent: state.opponent,
+		 	playerId: state.playerId,
+		 	username: state.username,
+		 	winnerId: state.winnerId
+		 }
+}
+
+function mapDispatchToProps(dispatch){
+	return bindActionCreators({
+	}, dispatch)
+}
+
+export const ConnectedCanvas = connect(mapStateToProps, mapDispatchToProps)(Canvas)
+

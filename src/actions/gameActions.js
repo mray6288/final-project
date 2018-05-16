@@ -18,8 +18,16 @@ export const incrementTimer = () => {
 	}
 }
 
-export const endGameState = () => {
+export const endGameState = (winnerId) => {
 	return {
 		type: 'END_GAME',
+		winnerId
+	}
+}
+
+export const playAgain = (guess) => {
+	return {
+		type: 'PLAY_AGAIN',
+		guess
 	}
 }
