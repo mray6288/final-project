@@ -103,11 +103,14 @@ class GameContainer extends React.Component {
 		// <Canvas username={this.props.username} opponent={this.props.opponent} gameOver={this.props.gameOver} playerId={this.playerId} io={this.props.io} scope={this.scope1} goal={this.props.goal} timer={this.props.timer} endGame={this.endGame}/>
         // <Canvas username={this.props.username} opponent={this.props.opponent} gameOver={this.props.gameOver} playerId={this.playerId} io={this.props.io} scope={this.scope2} goal={this.props.goal} timer={this.props.timer} endGame={this.endGame}/>
         let canvases = null
-        if (this.playerId === 1){
+        if (this.props.playerId === 1){
+        	console.log('canvas setup player 1')
         	canvases = <div><ConnectedCanvas scope={this.scope1} endGame={this.endGame} />
 				<ConnectedCanvas scope={this.scope2} endGame={this.endGame} />
 				</div>
         } else {
+        	console.log('canvas setup player 2')
+        	debugger
         	canvases = <div><ConnectedCanvas scope={this.scope2} endGame={this.endGame} />
 				<ConnectedCanvas scope={this.scope1} endGame={this.endGame} />
 				</div>

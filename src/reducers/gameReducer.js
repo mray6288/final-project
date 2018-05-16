@@ -27,10 +27,13 @@ export default function(state = defaultState, action){
 			})
 		case 'START_GAME':
 			let opponent = null
+			let playerId = 0
 			if (action.data.usernames[0] === state.username){
 				opponent = action.data.usernames[1]
+				playerId = 1
 			} else {
 				opponent = action.data.usernames[0]
+				playerId = 2
 			}
 			if (state.scoreboard[state.username] === undefined){
 				state.scoreboard[state.username] = 0
@@ -40,7 +43,7 @@ export default function(state = defaultState, action){
 				goal: action.data.goal,
 				timer: 0,
 				opponent: opponent,
-				playerId: action.data.playerId,
+				playerId: playerId,
 				scoreboard: state.scoreboard
 				})
 		case 'SPECTATE_GAME':

@@ -31,7 +31,7 @@ class Lobby extends React.Component {
 
 	enterGame = () => {
 		this.props.enterGame(this.props.username)
-		this.props.io.emit('initialize game', {username: this.props.username})
+		this.props.io.emit('join game', {username: this.props.username})
 	}
 
 
