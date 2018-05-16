@@ -13,7 +13,7 @@ class GameContainer extends React.Component {
 		this.state = {
 			// goal: '',
 		 //    timer: 0,
-		    gameOver: false,
+		    // gameOver: false,
 		    // gameStarted: false,
 		    // player: 0,
 		    // winnerId: 0,
@@ -22,13 +22,13 @@ class GameContainer extends React.Component {
 		this.scope2 = new paper.PaperScope()
 		this.scope1._id = 1
 		this.scope2._id = 2
+
 		// console.log('new io socket')
 		// this.props.io = openSocket('https://3f26a47c.ngrok.io')//http://localhost:8000')
 		props.io.on('initialize game', (data) => this.playerId = data.playerId)
 		props.io.emit('initialize game', {username: props.username})
 		// props.io.on('increment timer', this.incrementTimer.bind(this))
 
-		
 
 		props.io.on('start game', this.startGame.bind(this))
 		// console.log('num of players', this.props.io.sockets.clients().length)
@@ -84,30 +84,44 @@ class GameContainer extends React.Component {
 	}
 
 	playAgain = () => {
-		this.scope1 = new paper.PaperScope()
-		this.scope2 = new paper.PaperScope()
-		this.scope1._id = 1
-		this.scope2._id = 2
+		// this.scope1 = new paper.PaperScope()
+		// this.scope2 = new paper.PaperScope()
+		// this.scope1._id = 1
+		// this.scope2._id = 2
+		console.log('play again button')
+		this.props.io.emit('playAgain')
 		this.props.playAgain()
+		
+		
 	}
 
 	render() {
 		// console.log('scope1', this.scope1)
 		// console.log('scope2', this.scope2)
-		// console.log('username', this.props)
+		console.log('username', this.props)
 		// console.log('playerId', this.props.username, this.playerId)
 		
 		// <Canvas username={this.props.username} opponent={this.props.opponent} gameOver={this.props.gameOver} playerId={this.playerId} io={this.props.io} scope={this.scope1} goal={this.props.goal} timer={this.props.timer} endGame={this.endGame}/>
         // <Canvas username={this.props.username} opponent={this.props.opponent} gameOver={this.props.gameOver} playerId={this.playerId} io={this.props.io} scope={this.scope2} goal={this.props.goal} timer={this.props.timer} endGame={this.endGame}/>
+        let canvases = null
+        if (this.playerId === 1){
+        	canvases = <div><ConnectedCanvas scope={this.scope1} endGame={this.endGame} />
+				<ConnectedCanvas scope={this.scope2} endGame={this.endGame} />
+				</div>
+        } else {
+        	canvases = <div><ConnectedCanvas scope={this.scope2} endGame={this.endGame} />
+				<ConnectedCanvas scope={this.scope1} endGame={this.endGame} />
+				</div>
+        }
+			        
 
 		let game = (
 				<div className='game-container'> 
 				<h1>Your Goal: {this.props.goal}</h1>
 	        	<h1>{this.props.gameOver ? <button onClick={this.playAgain}>Play Again</button> : `Timer: ${this.props.timer}`}</h1>
 
-				<ConnectedCanvas scope={this.scope1} endGame={this.endGame} />
-				<ConnectedCanvas scope={this.scope2} endGame={this.endGame} />
-				</div>
+	        	{canvases}
+	        	</div>
 			)
 		return (
 				<div>

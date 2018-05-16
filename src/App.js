@@ -39,8 +39,8 @@ class App extends Component {
 
 
   render() {
-    console.log('app props at render', this.props)
-    console.log(this.state)
+    // console.log('app props at render', this.props)
+    // console.log(this.state)
     let button = (
       <form onSubmit={this.submitUsername}>
 
@@ -57,6 +57,7 @@ class App extends Component {
           
         </header>
         <p>Instructions: Race to draw a picture that the AI can recognize!</p>
+        
         {this.props.gameKey ? <ConnectedGameContainer newGame={this.newGame}/> : button}
         
       </div>

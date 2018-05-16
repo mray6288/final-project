@@ -81,14 +81,15 @@ class Canvas extends React.Component {
 		this.io.emit('endPath', {id: this.canvasId})
 	}
 
-	componentDidMount(){
-		
-
+	setupCanvas(){
+		this.vectors = [[],[],[]]
+		this.time_0 = 0
+		this.vectorLength = 0
 		this.canvas = document.getElementById(`canvas-${this.canvasId}`);
 		
 		this.paperSetup.setup(this.canvas);
-		
-		
+		this.paperSetup.view.setViewSize(670, 370)
+		this.clearCanvas({id:this.canvasId})
 		
 
 		if (this.isMine){
@@ -103,12 +104,21 @@ class Canvas extends React.Component {
 			this.tool.onMouseUp = this.emitEndPath.bind(this)
 		}
 
-		// tool.onResize = function(event) {
-		// 	// Whenever the window is resized, recenter the path:
-		// 	console.log('resizing')
-		// 	path.position = paper.view.center;
-		// }
+	}
+
+	componentDidMount(){
+		this.setupCanvas()
 		
+	}
+
+	componentDidUpdate(prevProps){
+		console.log('previous', prevProps)
+		console.log('new', this.props)
+		if (prevProps.gameOver && !this.props.gameOver){
+
+
+			this.setupCanvas()
+		}
 	}
 
 
@@ -116,6 +126,7 @@ class Canvas extends React.Component {
 	fetchGuesses = () => {
 		if (this.props.gameOver){
 			clearInterval(this.interval)
+			this.interval = 'inactive'
 			return null
 		}
 		// console.log(this.vectors[0].length, this.)
@@ -173,6 +184,7 @@ class Canvas extends React.Component {
 					over = true
 					won = true
 					guesses = [this.props.goal]
+
 					// if (this.isMine){
 					// 	this.io.emit('gameOver')
 					// }
@@ -207,7 +219,8 @@ class Canvas extends React.Component {
 	}
 
 	clearCanvas = (data) => {
-		// console.log(data, this.canvasId)
+		console.log('clearing', data, this.canvasId)
+		debugger
 		if (data.id !== this.canvasId){
 			return null
 		}
@@ -226,9 +239,7 @@ class Canvas extends React.Component {
 
 
 	render() {
-		if (this.props.gameOver){
-			debugger
-		}
+
 		return <div className='canvas-object'  >
 		<h2 className='winner'>{this.isWinner() ? (this.isMine ? `YOU WIN! ${this.props.timer} SECONDS` : `OPPONENT WINS! ${this.props.timer+1} SECONDS`) : <br/>}</h2>
 		
