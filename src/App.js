@@ -1,35 +1,37 @@
 import React, { Component } from 'react';
 import './App.css';
-import GameContainer from './containers/GameContainer'
-
-
+import { ConnectedGameContainer } from './containers/GameContainer'
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux'
+import { enterGame } from './actions/gameActions'
 
 
 class App extends Component {
 
   
   state = {
-    enterGame: false,
-    username: '',
-    gameNum: 1
+    // enterGame: false,
+    // username: '',
+    // gameNum: 1
   }
 
 
   
-  submitUsername = (event) => {
-    this.setState({
-      enterGame: true,
-      username: event.target.username.value,
-      gameContainer: <GameContainer key={this.state.gameNum} username={this.state.username} newGame={this.newGame}/>
-    })
+  submitUsername = (e) => {
+    e.preventDefault()
+    this.props.enterGame(e.target.username.value)
+    // debugger
+    // this.setState({
+    //   enterGame: true,
+    //   username: event.target.username.value
+    // })
 
   }
 
   newGame = () => {
     console.log('new game?', this.state)
     this.setState({
-      gameNum: this.state.gameNum+1,
-      gameContainer: <GameContainer key={this.state.gameNum+1} username={this.state.username} newGame={this.newGame}/>
+      gameNum: this.state.gameNum+1
     })
   }
   
@@ -37,6 +39,8 @@ class App extends Component {
 
 
   render() {
+    // console.log('app props at render', this.props)
+    // console.log(this.state)
     let button = (
       <form onSubmit={this.submitUsername}>
 
@@ -53,11 +57,27 @@ class App extends Component {
           
         </header>
         <p>Instructions: Race to draw a picture that the AI can recognize!</p>
-        {this.state.enterGame ? <GameContainer key={this.state.gameNum+1} username={this.state.username} newGame={this.newGame}/> : button}
+        
+        {this.props.gameKey ? <ConnectedGameContainer newGame={this.newGame}/> : button}
         
       </div>
     );
   }
 }
 
-export default App;
+function mapStateToProps(state){
+  return {io: state.io, 
+          gameKey: state.gameKey, 
+          username: state.username}
+}
+
+function mapDispatchToProps(dispatch){
+  return bindActionCreators({
+      enterGame: enterGame
+    },
+    dispatch
+  )
+}
+
+export const ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(App)
+

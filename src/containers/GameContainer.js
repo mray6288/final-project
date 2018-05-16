@@ -1,38 +1,37 @@
 import React from 'react'
-import Canvas from '../components/Canvas'
+import { ConnectedCanvas } from '../components/Canvas'
 import paper from '../../node_modules/paper/dist/paper-core.js'
-import openSocket from 'socket.io-client'
+// import openSocket from 'socket.io-client'
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux'
+import { startGame, incrementTimer, endGameState, playAgain } from '../actions/gameActions'
 
 
-// const goal_options = ['apple','bowtie','circle','hexagon','sword','bike','watermelon','pizza','dog','foot','calculator','smiley face']
-
-
-export default class GameContainer extends React.Component {
+class GameContainer extends React.Component {
 	constructor(props){
 		super()
 		this.state = {
-			goal: '',
-		    timer: 0,
-		    gameOver: false,
-		    gameStarted: false,
-		    player: 0,
-		    winnerId: 0,
+			// goal: '',
+		 //    timer: 0,
+		    // gameOver: false,
+		    // gameStarted: false,
+		    // player: 0,
+		    // winnerId: 0,
 		}
-
 		this.scope1 = new paper.PaperScope()
 		this.scope2 = new paper.PaperScope()
 		this.scope1._id = 1
 		this.scope2._id = 2
+
 		// console.log('new io socket')
-		this.io = openSocket('https://3f26a47c.ngrok.io')//http://localhost:8000')
-		this.io.on('initialize game', this.setPlayer.bind(this))
-		this.io.emit('initialize game', {username: props.username})
-		this.io.on('increment timer', this.incrementTimer.bind(this))
+		// this.props.io = openSocket('https://3f26a47c.ngrok.io')//http://localhost:8000')
+		props.io.on('initialize game', (data) => this.playerId = data.playerId)
+		props.io.emit('initialize game', {username: props.username})
+		// props.io.on('increment timer', this.incrementTimer.bind(this))
 
-		
 
-		this.io.on('start game', this.startGame.bind(this))
-		// console.log('num of players', this.io.sockets.clients().length)
+		props.io.on('start game', this.startGame.bind(this))
+		// console.log('num of players', this.props.io.sockets.clients().length)
 
 	}
 	
@@ -45,60 +44,111 @@ export default class GameContainer extends React.Component {
 
 	startGame(data){
 		// console.log('data', data)
-		this.interval = setInterval(this.incrementTimer, 1000)
-		if (data.usernames[0] === this.props.username){
-			this.opponent = data.usernames[1]
-		} else {
-			this.opponent = data.usernames[0]
-		}
-		this.setState({
-			goal: data.goal,
-			gameStarted: true,
-		})
+		this.props.startGame(Object.assign({}, data, {playerId: this.playerId}))
+		this.interval = setInterval(this.props.incrementTimer, 1000)
+
+		// if (data.usernames[0] === this.props.username){
+		// 	this.opponent = data.usernames[1]
+		// } else {
+		// 	this.opponent = data.usernames[0]
+		// }
+
+		// this.setState({
+		// 	goal: data.goal,
+		// 	gameStarted: true,
+		// })
 	}
 
-	setPlayer(data){
-		this.setState({
-			winnerId: data.player,
-			player: data.player
-		})
-	}
+	// setPlayer(data){
+	// 	this.setState({
+	// 		winnerId: data.player,
+	// 		player: data.player
+	// 	})
+	// }
 
-	incrementTimer = () => {
-		this.setState({timer:this.state.timer + 1})
-	}
+	// incrementTimer = () => {
+	// 	this.setState({timer:this.state.timer + 1})
+	// }
 
-	endFetch() {
+	endTimer() {
 		clearInterval(this.interval)
 	}
 
-	endGame = () => { 
-		this.endFetch()
-		this.io.close()
-		this.setState({
-		  gameOver: true,
-		})
+	endGame = (winnerId) => { 
+		this.endTimer()
+		// this.props.io.close()
+		this.props.endGameState(winnerId)
+		// this.setState({
+		//   gameOver: true,
+		// })
+	}
+
+	playAgain = () => {
+		// this.scope1 = new paper.PaperScope()
+		// this.scope2 = new paper.PaperScope()
+		// this.scope1._id = 1
+		// this.scope2._id = 2
+		console.log('play again button')
+		this.props.io.emit('playAgain')
+		this.props.playAgain()
+		
+		
 	}
 
 	render() {
-		console.log('scope1', this.scope1)
-		console.log('scope2', this.scope2)
-		// console.log('username', this.props)
-		// console.log('container state', this.state, this.opponent)
+		// console.log('scope1', this.scope1)
+		// console.log('scope2', this.scope2)
+		console.log('username', this.props)
+		// console.log('playerId', this.props.username, this.playerId)
+		
+		// <Canvas username={this.props.username} opponent={this.props.opponent} gameOver={this.props.gameOver} playerId={this.playerId} io={this.props.io} scope={this.scope1} goal={this.props.goal} timer={this.props.timer} endGame={this.endGame}/>
+        // <Canvas username={this.props.username} opponent={this.props.opponent} gameOver={this.props.gameOver} playerId={this.playerId} io={this.props.io} scope={this.scope2} goal={this.props.goal} timer={this.props.timer} endGame={this.endGame}/>
+        let canvases = null
+        if (this.playerId === 1){
+        	canvases = <div><ConnectedCanvas scope={this.scope1} endGame={this.endGame} />
+				<ConnectedCanvas scope={this.scope2} endGame={this.endGame} />
+				</div>
+        } else {
+        	canvases = <div><ConnectedCanvas scope={this.scope2} endGame={this.endGame} />
+				<ConnectedCanvas scope={this.scope1} endGame={this.endGame} />
+				</div>
+        }
+			        
+
 		let game = (
 				<div className='game-container'> 
-				<h1>Your Goal: {this.state.goal}</h1>
-	        	<h1>{this.state.gameOver ? <button onClick={this.props.newGame}>New Game</button> : `Timer: ${this.state.timer}`}</h1>
+				<h1>Your Goal: {this.props.goal}</h1>
+	        	<h1>{this.props.gameOver ? <button onClick={this.playAgain}>Play Again</button> : `Timer: ${this.props.timer}`}</h1>
 
-				<Canvas username={this.props.username} opponent={this.opponent} gameOver={this.state.gameOver} playerId={this.state.player} io={this.io} scope={this.scope1} goal={this.state.goal} timer={this.state.timer} endGame={this.endGame}/>
-        		<Canvas username={this.props.username} opponent={this.opponent} gameOver={this.state.gameOver} playerId={this.state.player} io={this.io} scope={this.scope2} goal={this.state.goal} timer={this.state.timer} endGame={this.endGame}/>
-				</div>
+	        	{canvases}
+	        	</div>
 			)
 		return (
 				<div>
-				{this.state.gameStarted ? game : 'Waiting for player 2'}
+				{this.props.opponent ? game : 'Waiting for player 2'}
 				</div>
 			)
 	}
 }
 
+function mapStateToProps(state){
+	return {io: state.io,
+		 	goal: state.goal,
+		 	timer: state.timer,
+		 	gameKey: state.gameKey, 
+		 	gameOver: state.gameOver,
+		 	opponent: state.opponent,
+		 	playerId: state.playerId,
+		 	username: state.username}
+}
+
+function mapDispatchToProps(dispatch){
+	return bindActionCreators({
+		startGame: startGame,
+		incrementTimer: incrementTimer,
+		endGameState: endGameState,
+		playAgain: playAgain
+	}, dispatch)
+}
+
+export const ConnectedGameContainer = connect(mapStateToProps, mapDispatchToProps)(GameContainer)

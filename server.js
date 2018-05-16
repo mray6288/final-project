@@ -19,39 +19,53 @@ var ServerInterval = (function () {
 
 })();
 
-let openGame = false
 let gameId = 1
 let usernames = []
 
 io.on('connection', (client) => {
 	
-	client.on('initialize game', (data) => {
-		let num_players = Object.keys(io.clients().connected).length
+	client.on('initialize game', (clientData) => {
+		// let num_players = Object.keys(io.clients().connected).length
 		// clearInterval(ServerInterval.get())
 		let thisGame = `game-${gameId}`
 		client.join(thisGame)	
-		console.log('initializing', data.username, 'in gameId', gameId)
+		let playerId = 0
+		console.log('initializing', clientData.username, 'in gameId', gameId, 'as player', playerId)
 		if (usernames.length > 0){
-			usernames.push(data.username)
-			client.emit('initialize game', {player: 2})
+			usernames.push(clientData.username)
+			playerId = 2
+			client.emit('initialize game', {playerId: playerId})
 			goal = goal_options[Math.floor(Math.random() * goal_options.length)]
 			io.to(thisGame).emit('start game', {goal: goal, usernames: usernames})
 			// let thisInterval = setInterval(() => io.to(thisGame).emit('increment timer'), 1000)
-			openGame = false
 			gameId++
 			usernames = []
 		} else {
-			usernames.push(data.username)
-			client.emit('initialize game', {player: 1})
-			openGame = true
+			playerId = 1
+			usernames.push(clientData.username)
+			client.emit('initialize game', {playerId: playerId})
 
 		}
+		
 		client.on('drawing', (data) => io.to(thisGame).emit('drawing', data)),
 		client.on('endPath', (data) => io.to(thisGame).emit('endPath', data)),
 		client.on('setGuess', (data) => io.to(thisGame).emit('setGuess', data)),
 		// client.on('gameOver', () => clearInterval(thisInterval)),
 		client.on('clearCanvas', (data) => io.to(thisGame).emit('clearCanvas', data))
-		client.on('disconnect', () => usernames = usernames.filter(name => name !== data.username))
+		client.on('playAgain', () => {
+			console.log('playing again', clientData.username)
+			if (usernames.length > 0){
+				usernames.push(clientData.username)
+				goal = goal_options[Math.floor(Math.random() * goal_options.length)]
+				io.to(thisGame).emit('start game', {goal: goal, usernames: usernames})
+				usernames = []
+				// io.to(thisGame).emit('clearCanvas', {id: 1})
+				// io.to(thisGame).emit('clearCanvas', {id: 2})
+			} else {
+				usernames.push(clientData.username)
+			}
+		})
+		client.on('disconnect', () => usernames = usernames.filter(name => name !== clientData.username))
 	})
 })
 
