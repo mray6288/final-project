@@ -180,9 +180,8 @@ class Canvas extends React.Component {
 					break
 				}
 			}
-			if (guesses[0] === this.props.goal){
+			if (guesses[0] === this.props.goal || (this.props.timer > 40 && guesses.slice(0, 5).includes(this.props.goal))){
 				if (goalScore < 10){
-					console.log('win')
 					this.props.endGame(this.canvasId)
 					over = true
 					won = true
@@ -199,7 +198,7 @@ class Canvas extends React.Component {
 			} else if (goalScore){
 				console.log(goalScore)
 				
-			}
+			} 
 			// if (this.props.timer === 29 && !won){
 			// 	lost = true
 			// 	this.endFetch()
