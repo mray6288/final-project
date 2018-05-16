@@ -24,7 +24,6 @@ export default function(state = defaultState, action){
 				opponent = action.data.usernames[0]
 			}
 			if (state.scoreboard[state.username] === undefined){
-				console.log('resetting scoreboard', state.scoreboard, state.username)
 				state.scoreboard[state.username] = 0
 				state.scoreboard[opponent] = 0
 			}
@@ -43,16 +42,11 @@ export default function(state = defaultState, action){
 			if (action.winnerId === state.playerId){
 				scoreboard[state.username] = state.scoreboard[state.username] + 1
 				scoreboard[state.opponent] = state.scoreboard[state.opponent]
-				// winner = state.username
-				// state.scoreboard[state.username] = state.scoreboard[state.username] + 1
 			} else {
 				scoreboard[state.username] = state.scoreboard[state.username]
 				scoreboard[state.opponent] = state.scoreboard[state.opponent] + 1
-				// winner = state.opponent
-				// state.scoreboard[state.opponent] = state.scoreboard[state.opponent] + 1
 			}
 
-			console.log('NEW SCOREBOARD', state.scoreboard, scoreboard)
 			return Object.assign({}, state, {
 				gameOver: true,
 				winnerId: action.winnerId,

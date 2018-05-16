@@ -1,7 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
-import { setGuess } from '../actions/gameActions'
 
 
 const URL = 'https://inputtools.google.com/request?ime=handwriting&app=quickdraw&dbg=1&cs=1&oe=UTF-8'
@@ -164,8 +163,6 @@ class Canvas extends React.Component {
 		}
 		let json = data.json
 
-		let won = false
-		let over = false
 		let guesses = json[1][0][1]
 		let scores = json[1][0][3].debug_info
 		let goalScore = null
@@ -183,8 +180,6 @@ class Canvas extends React.Component {
 			if (guesses[0] === this.props.goal || (this.props.timer > 40 && guesses.slice(0, 5).includes(this.props.goal))){
 				if (goalScore < 10){
 					this.props.endGame(this.canvasId)
-					over = true
-					won = true
 					guesses = [this.props.goal]
 
 					// if (this.isMine){

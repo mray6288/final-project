@@ -88,7 +88,6 @@ class GameContainer extends React.Component {
 		// this.scope2 = new paper.PaperScope()
 		// this.scope1._id = 1
 		// this.scope2._id = 2
-		console.log('play again button')
 		this.props.io.emit('playAgain')
 		this.props.playAgain()
 		
