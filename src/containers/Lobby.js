@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
-import { enterGame, updateRooms } from '../actions/gameActions'
+import { enterGame, updateRooms, spectateGame } from '../actions/gameActions'
 
 
 class Lobby extends React.Component {
@@ -34,8 +34,15 @@ class Lobby extends React.Component {
 		this.props.io.emit('join game', {username: this.props.username})
 	}
 
+	spectateGame = () => {
+		// console.log('data', data)
+		this.props.io.on('spectate game', data => this.props.spectateGame(data))
+		this.props.io.emit('join game', {username: this.props.username})
+	}
+
 
 	render(){
+		console.log('lobby render', this.props)
 		let openRooms = []
 		let spectatorRooms = []
 		for(let room in this.props.openRooms){
@@ -43,7 +50,7 @@ class Lobby extends React.Component {
 			if (players.length === 1){
 				openRooms.push(<button onClick={this.enterGame}>vs {players[0]}</button>)
 			} else {
-				spectatorRooms.push(<button onClick={this.enterGame}>{players[0]} vs {players[1]}</button>)
+				spectatorRooms.push(<button onClick={this.spectateGame}>{players[0]} vs {players[1]}</button>)
 			}
 		}
 		return <div className='lobby'>
@@ -76,7 +83,8 @@ function mapStateToProps(state){
 function mapDispatchToProps(dispatch){
 	return bindActionCreators({
 		enterGame: enterGame,
-		updateRooms: updateRooms
+		updateRooms: updateRooms,
+		spectateGame: spectateGame
 	}, dispatch)
 }
 

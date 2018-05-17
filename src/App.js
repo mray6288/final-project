@@ -5,6 +5,8 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
 import { login } from './actions/gameActions'
 import { ConnectedLobby } from './containers/Lobby'
+import { ConnectedSpectatorContainer } from './containers/SpectatorContainer'
+
 
 
 
@@ -62,7 +64,7 @@ class App extends Component {
         </header>
         <p>Instructions: Race to draw a picture that the AI can recognize!</p>
         
-        {this.props.gameKey ? <ConnectedGameContainer newGame={this.newGame}/> 
+        {this.props.gameKey ? (1===1 ? <ConnectedGameContainer newGame={this.newGame}/>  : <ConnectedSpectatorContainer />)
         : (this.props.username ? <ConnectedLobby /> : button)}
         
       </div>

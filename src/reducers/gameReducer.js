@@ -47,11 +47,13 @@ export default function(state = defaultState, action){
 				scoreboard: state.scoreboard
 				})
 		case 'SPECTATE_GAME':
+			debugger
 			return Object.assign({}, state, {
 				goal: action.data.goal,
 				username: action.data.usernames[0],
 				opponent: action.data.usernames[1],
-				playerId: 3
+				playerId: 3,
+				spectator:true
 			})
 		case 'INCREMENT_TIMER':
 			return Object.assign({}, state, {timer: state.timer + 1})
