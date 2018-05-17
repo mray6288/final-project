@@ -1,4 +1,4 @@
-const API_URL = "http://ray-final-project-backend.herokuapp.com/api/v1"
+const API_URL = "https://ray-final-project-backend.herokuapp.com/api/v1"
 const headers = { 
 	"Content-Type": "application/json"
 }
