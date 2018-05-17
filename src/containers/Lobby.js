@@ -1,27 +1,30 @@
 import React from 'react'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
-import { enterGame, updateRooms, spectateGame } from '../actions/gameActions'
+import { enterGame, updateRooms, spectateGame, connectSocket } from '../actions/actions'
 
 
 class Lobby extends React.Component {
 	constructor(props){
 		super()
-		this.state = {
+		// console.log('lobby constructor', props)
+		// this.state = {
 			// goal: '',
 		 //    timer: 0,
 		    // gameOver: false,
 		    // gameStarted: false,
 		    // player: 0,
 		    // winnerId: 0,
-		}
+		// }
 
 		// console.log('new io socket')
 		// this.props.io = openSocket('https://3f26a47c.ngrok.io')//http://localhost:8000')
 		// props.io.on('initialize game', (data) => this.playerId = data.playerId)
-		// props.io.emit('initialize game', {username: props.username})
+		// props.io.emit('initialize game', {username: props.user.username})
 		// props.io.on('increment timer', this.incrementTimer.bind(this))
-		props.io.on('game rooms', data => this.props.updateRooms(data))
+		// if (!props.io)
+		// 	props.connectSocket()
+		
 
 
 		// props.io.on('start game', this.startGame.bind(this))
@@ -29,20 +32,32 @@ class Lobby extends React.Component {
 		// setTimeout(this.enterGame, 5000)
 	}
 
+	componentDidMount(){
+		// console.log(this.props)
+		// this.props.io.on('game rooms', data => this.props.updateRooms(data))
+	}
+
 	enterGame = () => {
-		this.props.enterGame(this.props.username)
-		this.props.io.emit('join game', {username: this.props.username})
+		this.props.enterGame(this.props.user.username)
+		console.log(this.props)
+		this.props.history.push("/game")
+		this.props.io.emit('join game', {username: this.props.user.username})
+
 	}
 
 	spectateGame = () => {
+		return null
 		// console.log('data', data)
 		this.props.io.on('spectate game', data => this.props.spectateGame(data))
-		this.props.io.emit('join game', {username: this.props.username})
+		this.props.io.emit('join game', {username: this.props.user.username})
 	}
 
 
 	render(){
 		console.log('lobby render', this.props)
+		if (this.props.io){
+			this.props.io.on('game rooms', data => this.props.updateRooms(data))
+		}
 		let openRooms = []
 		let spectatorRooms = []
 		for(let room in this.props.openRooms){
@@ -57,8 +72,7 @@ class Lobby extends React.Component {
 				<h2>Open Rooms</h2>
 				{openRooms}
 				<button onClick={this.enterGame}>NEW GAME</button>
-				<h2>Spectator Rooms</h2>
-				{spectatorRooms}
+				
 				
 				</div>
 	}
@@ -67,7 +81,7 @@ class Lobby extends React.Component {
 
 function mapStateToProps(state){
 	return {io: state.io,
-			username: state.username,
+			user: state.user,
 			openRooms: state.openRooms,
 
 		 	goal: state.goal,
@@ -84,7 +98,8 @@ function mapDispatchToProps(dispatch){
 	return bindActionCreators({
 		enterGame: enterGame,
 		updateRooms: updateRooms,
-		spectateGame: spectateGame
+		spectateGame: spectateGame,
+		connectSocket: connectSocket
 	}, dispatch)
 }
 

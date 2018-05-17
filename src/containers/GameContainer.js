@@ -4,7 +4,7 @@ import paper from '../../node_modules/paper/dist/paper-core.js'
 // import openSocket from 'socket.io-client'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
-import { startGame, incrementTimer, endGameState, playAgain } from '../actions/gameActions'
+import { startGame, incrementTimer, endGameState, playAgain } from '../actions/actions'
 import { ConnectedScoreboard } from '../components/Scoreboard'
 
 class GameContainer extends React.Component {
@@ -143,7 +143,7 @@ function mapStateToProps(state){
 		 	gameOver: state.gameOver,
 		 	opponent: state.opponent,
 		 	playerId: state.playerId,
-		 	username: state.username}
+		 	user: state.user}
 }
 
 function mapDispatchToProps(dispatch){

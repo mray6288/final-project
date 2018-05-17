@@ -29,7 +29,7 @@ let goals = {}
 io.on('connection', (client) => {
 	console.log('rooms at connect', gameRooms)
 	client.emit('game rooms', gameRooms)
-	client.on('join game', (clientData) => {
+	client.on('join game', (user) => {
 		// let num_players = Object.keys(io.clients().connected).length
 		// clearInterval(ServerInterval.get())
 		let thisGame = `game-${gameId}`
@@ -38,25 +38,25 @@ io.on('connection', (client) => {
 		console.log(gameRooms)
 		if (!gameRooms[thisGame]) {
 			gameRooms[thisGame] = []
-			console.log('initializing', clientData.username, 'in gameId', gameId)
-			gameRooms[thisGame].push(clientData.username)
+			console.log('initializing', user.username, 'in gameId', gameId)
+			gameRooms[thisGame].push(user.username)
 			console.log(gameRooms)
 			client.emit('join game')
 
 		} else if (gameRooms[thisGame].length === 1){
-			gameRooms[thisGame].push(clientData.username)
+			gameRooms[thisGame].push(user.username)
 			client.emit('join game')
 			goal = goal_options[Math.floor(Math.random() * goal_options.length)]
 			goals[gameId] = goal
 			io.to(thisGame).emit('start game', {goal: goal, usernames: gameRooms[thisGame]})
 			
 			// let thisInterval = setInterval(() => io.to(thisGame).emit('increment timer'), 1000)
-			console.log('joining', clientData.username, 'in gameId', gameId)
-			// gameId++
+			console.log('joining', user.username, 'in gameId', gameId)
+			gameId++
 			// gameRooms[thisGame] = []
 		}  else {
 			client.emit('spectate game', {goal: goals[gameId], usernames: gameRooms[thisGame]})
-			console.log('joining spectator', clientData.username, 'in gameId', gameId)
+			console.log('joining spectator', user.username, 'in gameId', gameId)
 		}
 		
 		client.on('drawing', (data) => io.to(thisGame).emit('drawing', data)),
@@ -70,10 +70,10 @@ io.on('connection', (client) => {
 			} else {
 				rematches[gameId] = 2
 			}
-			// console.log('playing again', clientData.username, rematches)
+			// console.log('playing again', user.username, rematches)
 			if (rematches[gameId] === 2){
 				// console.log('rematch')
-				gameRooms[thisGame].push(clientData.username)
+				gameRooms[thisGame].push(user.username)
 				goal = goal_options[Math.floor(Math.random() * goal_options.length)]
 				io.to(thisGame).emit('start game', {goal: goal, usernames: gameRooms[thisGame]})
 				rematches[gameId] = 0
@@ -84,8 +84,8 @@ io.on('connection', (client) => {
 		client.on('disconnect', () => {
 			// console.log('this game', thisGame)
 			// console.log('game rooms', gameRooms)
-			// console.log('username', clientData.username)
-			gameRooms[thisGame] = gameRooms[thisGame].filter(name => name !== clientData.username)
+			// console.log('username', user.username)
+			gameRooms[thisGame] = gameRooms[thisGame].filter(name => name !== user.username)
 			
 			if (gameRooms[thisGame].length === 0){
 				delete gameRooms[thisGame]
@@ -100,7 +100,7 @@ io.on('connection', (client) => {
 // 	clearInterval(ServerInterval.get());
 // })
 
-const port = 8000
+const port = process.env.PORT || 8000
 io.listen(port)
 console.log('listening on port ', port)
 

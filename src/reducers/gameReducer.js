@@ -9,13 +9,20 @@ export default function(state = defaultState, action){
 		case 'LOGIN':
 			playerId++
 			let io = openSocket('https://3f26a47c.ngrok.io')
+			console.log('username set', action.user)
 			return Object.assign({}, state, {
-				username: action.username,
+				user: action.user,
 				playerId,
-				io,
+				io
 			})
+		case 'LOGOUT':
+			return defaultState
+		// case 'CONNECT_SOCKET':
+		// 	let io = openSocket('https://3f26a47c.ngrok.io')
+		// 	console.log('socket connected')
+		// 	return Object.assign({}, state, {io:io})
 		case 'UPDATE_ROOMS':
-			console.log('UPDATE ROOMS ACTION', action)
+			// console.log('UPDATE ROOMS ACTION', action)
 			return Object.assign({}, state, {openRooms: action.rooms})
 		case 'ENTER_GAME':
 			
@@ -28,15 +35,15 @@ export default function(state = defaultState, action){
 		case 'START_GAME':
 			let opponent = null
 			let playerId = 0
-			if (action.data.usernames[0] === state.username){
+			if (action.data.usernames[0] === state.user.username){
 				opponent = action.data.usernames[1]
 				playerId = 1
 			} else {
 				opponent = action.data.usernames[0]
 				playerId = 2
 			}
-			if (state.scoreboard[state.username] === undefined){
-				state.scoreboard[state.username] = 0
+			if (state.scoreboard[state.user.username] === undefined){
+				state.scoreboard[state.user.username] = 0
 				state.scoreboard[opponent] = 0
 			}
 			return Object.assign({}, state, {
@@ -46,25 +53,25 @@ export default function(state = defaultState, action){
 				playerId: playerId,
 				scoreboard: state.scoreboard
 				})
-		case 'SPECTATE_GAME':
-			debugger
-			return Object.assign({}, state, {
-				goal: action.data.goal,
-				username: action.data.usernames[0],
-				opponent: action.data.usernames[1],
-				playerId: 3,
-				spectator:true
-			})
+		// case 'SPECTATE_GAME':
+		// 	debugger
+		// 	return Object.assign({}, state, {
+		// 		goal: action.data.goal,
+		// 		username: action.data.usernames[0],
+		// 		opponent: action.data.usernames[1],
+		// 		playerId: 3,
+		// 		spectator:true
+		// 	})
 		case 'INCREMENT_TIMER':
 			return Object.assign({}, state, {timer: state.timer + 1})
 		case 'END_GAME':
 			// let winner = ''
 			let scoreboard = {}
 			if (action.winnerId === state.playerId){
-				scoreboard[state.username] = state.scoreboard[state.username] + 1
+				scoreboard[state.user.username] = state.scoreboard[state.user.username] + 1
 				scoreboard[state.opponent] = state.scoreboard[state.opponent]
 			} else {
-				scoreboard[state.username] = state.scoreboard[state.username]
+				scoreboard[state.user.username] = state.scoreboard[state.user.username]
 				scoreboard[state.opponent] = state.scoreboard[state.opponent] + 1
 			}
 
