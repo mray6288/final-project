@@ -32,9 +32,10 @@ class GameContainer extends React.Component {
 		// props.io.emit('initialize game', {username: props.username})
 		// props.io.on('increment timer', this.incrementTimer.bind(this))
 
-
-		props.io.on('start game', this.startGame.bind(this))
-		props.io.on('opponent left', this.opponentLeft)
+		if(props.io){
+			props.io.on('start game', this.startGame.bind(this))
+			props.io.on('opponent left', this.opponentLeft)
+		}
 		// console.log('num of players', this.props.io.sockets.clients().length)
 
 	}
@@ -50,7 +51,8 @@ class GameContainer extends React.Component {
 		if (this.interval){
 			clearInterval(this.interval)
 		}
-		this.props.io.emit('left game', this.props.user)
+
+		this.props.io && this.props.io.emit('left game', this.props.user)
 	}
 
 	startGame(data){
@@ -85,6 +87,8 @@ class GameContainer extends React.Component {
 	endGame = (winnerId) => {
 
 		// this.props.io.close()
+		clearInterval(this.interval)
+		this.interval = null
 		this.props.endGameState(winnerId)
 		// this.setState({
 		//   gameOver: true,
@@ -93,7 +97,6 @@ class GameContainer extends React.Component {
 
 	opponentLeft = () => {
 		alert('opponent left game - redirecting back to lobby')
-		this.props.history.push('/lobby')
 		setTimeout(() => this.props.history.push('/lobby'), 4000)
 	}
 

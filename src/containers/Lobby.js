@@ -35,10 +35,17 @@ class Lobby extends React.Component {
 		// setTimeout(this.enterGame, 5000)
 	}
 
-	// componentDidMount(){
-		// console.log(this.props)
-		// this.props.io.on('game rooms', data => this.props.updateRooms(data))
-	// }
+	componentDidMount(){
+		console.log(this.props)
+		if(this.props.io){
+			this.props.io.on('open games', data => this.props.updateRooms(data))
+			this.interval = setInterval(() => this.props.io.emit('open games'), 3000)
+		}
+	}
+
+	componentWillUnmount(){
+		this.interval && clearInterval(this.interval)
+	}
 
 
 
@@ -61,7 +68,7 @@ class Lobby extends React.Component {
 	render(){
 		console.log('lobby render', this.props)
 		if (this.props.io){
-			this.props.io.on('game rooms', data => this.props.updateRooms(data))
+			this.props.io.on('open games', data => this.props.updateRooms(data))
 		}
 		let openRooms = []
 		let spectatorRooms = []

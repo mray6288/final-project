@@ -64,12 +64,12 @@ export function connectSocket(){
 
 
 
-function authedHeaders(){
-	return {
-		...headers,
-		"Authorization": localStorage.getItem("token")
-	}
-}
+// function authedHeaders(){
+// 	return {
+// 		...headers,
+// 		"Authorization": localStorage.getItem("token")
+// 	}
+// }
 export function login(username, password){
 	return (dispatch) => {
 		return fetch(API_URL + "/login", {
@@ -134,44 +134,6 @@ export function logout(){
 	}
 }
 
-// export function createMatch(bot_id){
-
-// 	return (dispatch) => {
-// 		return fetch(API_URL + "/bots/match", {
-// 			method: "POST",
-// 			headers: authedHeaders(),
-// 			body: JSON.stringify({bot_id})
-// 		})
-// 		.then(res => res.json())
-// 		.then(match => {
-// 			dispatch({type: "NEW_MATCH", payload: match})
-// 		})
-// 	}
-// }
-
-// export function deleteMatch(match_id){
-// 	return (dispatch) => {
-// 		return fetch(API_URL + "/bots/delete_match", {
-// 			method: "POST",
-// 			headers: authedHeaders(),
-// 			body: JSON.stringify({match_id})
-// 		})
-// 		.then(res => res.json())
-// 		.then(message => {
-// 			dispatch({type: "DELETE_MATCH", payload: match_id})
-// 		})
-// 	}
-// }
-
-// export function getBots(){
-// 	return (dispatch) => {
-// 		return fetch(API_URL + "/bots")
-// 		.then(res => res.json())
-// 		.then(bots => {
-// 			dispatch({type: "GET_BOTS", payload: bots})
-// 		})
-// 	}
-// }
 
 
 
