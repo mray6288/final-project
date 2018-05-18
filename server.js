@@ -53,7 +53,7 @@ io.on('connection', (client) => {
 			
 			// let thisInterval = setInterval(() => io.to(thisGame).emit('increment timer'), 1000)
 			console.log('joining', data.username, 'in gameId', gameId)
-			gameId++
+			// gameId++
 			// gameRooms[thisGame] = []
 		}  else {
 			client.emit('spectate game', {goal: goals[gameId], usernames: gameRooms[thisGame]})
