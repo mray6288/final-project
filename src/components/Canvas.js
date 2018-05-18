@@ -127,6 +127,10 @@ class Canvas extends React.Component {
 		if (this.interval){
 			clearInterval(this.interval)
 		}
+		this.io.off('drawing')
+		this.io.off('endPath')
+		this.io.off('clearCanvas')
+		this.io.off('setGuess')
 		
 	}
 

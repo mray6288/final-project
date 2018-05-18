@@ -3,7 +3,7 @@ import './App.css';
 import { ConnectedGameContainer } from './containers/GameContainer'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
-import { getUser, logout } from './actions/actions'
+import { getUser, logout, connectSocket } from './actions/actions'
 import { ConnectedLobby } from './containers/Lobby'
 import { ConnectedSpectatorContainer } from './containers/SpectatorContainer'
 import Login from './components/Login'
@@ -13,15 +13,15 @@ import {Route, withRouter, Switch, Link} from 'react-router-dom'
 
 
 class App extends Component {
-
-  
-  state = {
-    // enterGame: false,
-    // username: '',
-    // gameNum: 1
+  constructor(props){
+    super()
+    props.connectSocket()
   }
 
+
+
   componentDidMount(){
+    // console.log(this.props)
     if (localStorage.getItem("token")){
       this.props.getUser()
       .then(() => {
@@ -30,27 +30,8 @@ class App extends Component {
     } 
   }
 
-
-  
-  // submitUsername = (e) => {
-  //   e.preventDefault()
-  //   this.props.login(e.target.username.value)
-
-
-  // }
-
-  // newGame = () => {
-  //   console.log('new game?', this.state)
-  //   this.setState({
-  //     gameNum: this.state.gameNum+1
-  //   })
-  // }
-
-
-
-
     render() {
-      console.log('app props at render', this.props)
+      // console.log('app props at render', this.props)
       
       return (
         <div className="App">
@@ -70,7 +51,7 @@ class App extends Component {
           <Route path='/signup' component={Signup}/>
           <Route path='/lobby' component={ConnectedLobby}/>
           <Route path='/game' component={ConnectedGameContainer}/>
-          <Route component={ConnectedLobby}/>
+          <Route component={Login}/>
         </Switch>
         </div>
       )
@@ -87,7 +68,9 @@ function mapStateToProps(state){
 
 function mapDispatchToProps(dispatch){
   return bindActionCreators({
-      getUser: getUser
+      getUser: getUser,
+      logout: logout,
+      connectSocket: connectSocket
       
     },
     dispatch
@@ -95,4 +78,4 @@ function mapDispatchToProps(dispatch){
 }
 
 // export const ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(App)
-export default withRouter(connect(mapStateToProps, {getUser, logout})(App));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));

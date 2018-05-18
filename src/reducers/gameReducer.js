@@ -8,22 +8,24 @@ export default function(state = defaultState, action){
 	switch(action.type){
 		case 'LOGIN':
 			playerId++
-			let io = openSocket('https://3f26a47c.ngrok.io')
-			console.log('username set', action.user)
+			// let io = openSocket('https://3f26a47c.ngrok.io')
+			// console.log('username set', action.user)
 			return Object.assign({}, state, {
 				user: action.user,
 				playerId,
-				io
+				
 			})
 		case 'LOGOUT':
 			return defaultState
-		// case 'CONNECT_SOCKET':
-		// 	let io = openSocket('https://3f26a47c.ngrok.io')
-		// 	console.log('socket connected')
-		// 	return Object.assign({}, state, {io:io})
-		case 'UPDATE_ROOMS':
-			// console.log('UPDATE ROOMS ACTION', action)
-			return Object.assign({}, state, {openRooms: action.rooms})
+		case 'CONNECT_SOCKET':
+			// console.log('socket connected')
+			let io = openSocket('https://3f26a47c.ngrok.io')
+			return Object.assign({}, state, {
+				io
+			})
+		case 'UPDATE_GAMES':
+			// console.log('UPDATE GAMES ACTION', action)
+			return Object.assign({}, state, {openGames: action.games})
 		case 'ENTER_GAME':
 			
 			gameKey++
@@ -89,6 +91,17 @@ export default function(state = defaultState, action){
 				timer: 0,
 				winnerId: null,
 				goal: 'waiting for opponent'
+			})
+		case 'RESET_GAME_PROPS':
+			return Object.assign({}, state, {
+				goal: '',
+				timer: 0,
+				gameOver: false,
+				gameKey: null,
+				winnerId: null,
+				opponent: null,
+				scoreboard: {}
+
 			})
 		default:
 			return state

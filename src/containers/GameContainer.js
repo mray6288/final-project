@@ -4,7 +4,7 @@ import paper from '../../node_modules/paper/dist/paper-core.js'
 // import openSocket from 'socket.io-client'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
-import { startGame, incrementTimer, endGameState, playAgain } from '../actions/actions'
+import { resetGameProps, startGame, incrementTimer, endGameState, playAgain } from '../actions/actions'
 import { ConnectedScoreboard } from '../components/Scoreboard'
 
 class GameContainer extends React.Component {
@@ -51,8 +51,10 @@ class GameContainer extends React.Component {
 		if (this.interval){
 			clearInterval(this.interval)
 		}
-
+		this.props.resetGameProps()
 		this.props.io && this.props.io.emit('left game', this.props.user)
+		this.props.io.off('start game')
+		this.props.io.off('opponent left')
 	}
 
 	startGame(data){
@@ -167,7 +169,8 @@ function mapDispatchToProps(dispatch){
 		startGame: startGame,
 		incrementTimer: incrementTimer,
 		endGameState: endGameState,
-		playAgain: playAgain
+		playAgain: playAgain,
+		resetGameProps: resetGameProps
 	}, dispatch)
 }
 

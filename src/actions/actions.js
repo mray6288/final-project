@@ -5,11 +5,18 @@ const headers = {
 }
 
 
-export function updateRooms(rooms){
-	// console.log('actions rooms', rooms)
+export function updateGames(games){
+	// console.log('actions games', games)
 	return {
-		type: 'UPDATE_ROOMS',
-		rooms
+		type: 'UPDATE_GAMES',
+		games
+	}
+}
+
+export function resetGameProps(){
+	// console.log('actions games', games)
+	return {
+		type: 'RESET_GAME_PROPS',
 	}
 }
 

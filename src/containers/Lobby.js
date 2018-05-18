@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
-import { enterGame, updateRooms, spectateGame, connectSocket } from '../actions/actions'
+import { enterGame, updateGames, spectateGame, connectSocket } from '../actions/actions'
 
 
 class Lobby extends React.Component {
@@ -10,6 +10,8 @@ class Lobby extends React.Component {
 		if (!props.user){
 	        props.history.push('/login')
 	      }
+	    // console.log('constructor')
+	    props.io.on('open games', data => this.props.updateGames(data))
 		// console.log('lobby constructor', props)
 		// this.state = {
 			// goal: '',
@@ -25,8 +27,7 @@ class Lobby extends React.Component {
 		// props.io.on('initialize game', (data) => this.playerId = data.playerId)
 		// props.io.emit('initialize game', {username: props.user.username})
 		// props.io.on('increment timer', this.incrementTimer.bind(this))
-		// if (!props.io)
-		// 	props.connectSocket()
+
 		
 
 
@@ -35,25 +36,31 @@ class Lobby extends React.Component {
 		// setTimeout(this.enterGame, 5000)
 	}
 
+
 	componentDidMount(){
-		console.log(this.props)
-		if(this.props.io){
-			this.props.io.on('open games', data => this.props.updateRooms(data))
-			this.interval = setInterval(() => this.props.io.emit('open games'), 3000)
-		}
+		// console.log('did mount')
+		
+		
+		this.props.io.emit('open games')
+		this.interval = setInterval(() => this.props.io.emit('open games'), 3000)
+		
+		
 	}
 
 	componentWillUnmount(){
+		// console.log('will unmount')
 		this.interval && clearInterval(this.interval)
+		this.props.io.off('open games')
 	}
 
 
 
-	enterGame = () => {
+	enterGame = (e) => {
 		this.props.enterGame(this.props.user.username)
-		console.log(this.props)
+		// console.log(e)
+		
 		this.props.history.push("/game")
-		this.props.io.emit('join game', {username: this.props.user.username})
+		this.props.io.emit('join game', {username: this.props.user.username, gameId:e.target.dataset.id})
 
 	}
 
@@ -66,25 +73,34 @@ class Lobby extends React.Component {
 
 
 	render(){
-		console.log('lobby render', this.props)
-		if (this.props.io){
-			this.props.io.on('open games', data => this.props.updateRooms(data))
-		}
-		let openRooms = []
-		let spectatorRooms = []
-		for(let room in this.props.openRooms){
-			let players = this.props.openRooms[room]
+		// console.log('lobby render', this.props)
+		// if(this.props.io){
+		// 	if (!this.interval) {
+		// 		this.props.io.on('open games', data => this.props.updateGames(data))
+		// 		this.props.io.emit('open games')
+		// 	}else {
+		// 		clearInterval(this.interval)
+		// 		this.interval = setInterval(() => this.props.io.emit('open games'), 3000)
+		// 	}
+		// }
+
+		let openGames = []
+		let spectatorGames = []
+		for(let game in this.props.openGames){
+			let players = this.props.openGames[game]
 			if (players.length === 1){
-				openRooms.push(<button onClick={this.enterGame}>vs {players[0]}</button>)
+				openGames.push(<button data-id={game} onClick={this.enterGame}>vs {players[0]}</button>)
 			} else {
-				spectatorRooms.push(<button onClick={this.spectateGame}>{players[0]} vs {players[1]}</button>)
+				spectatorGames.push(<button onClick={this.spectateGame}>{players[0]} vs {players[1]}</button>)
 			}
 		}
+		
 		return <div className='lobby'>
 				<h2>Open Games</h2>
-				{openRooms}
+				{openGames}<br/>
 				<button onClick={this.enterGame}>NEW GAME</button>
-				
+				<h2>Spectate Games</h2>
+				{spectatorGames}
 				
 				</div>
 	}
@@ -94,7 +110,7 @@ class Lobby extends React.Component {
 function mapStateToProps(state){
 	return {io: state.io,
 			user: state.user,
-			openRooms: state.openRooms,
+			openGames: state.openGames,
 
 		 	goal: state.goal,
 		 	timer: state.timer,
@@ -109,7 +125,7 @@ function mapStateToProps(state){
 function mapDispatchToProps(dispatch){
 	return bindActionCreators({
 		enterGame: enterGame,
-		updateRooms: updateRooms,
+		updateGames: updateGames,
 		spectateGame: spectateGame,
 		connectSocket: connectSocket
 	}, dispatch)

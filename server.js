@@ -28,12 +28,16 @@ let goals = {}
 
 io.on('connection', (client) => {
 	console.log('rooms at connect', gameRooms)
-	client.on('open games', () => client.emit('open games', gameRooms))
+	client.on('open games', () => {
+		// console.log('open games', gameRooms)
+		client.emit('open games', gameRooms)})
 
 	client.on('join game', (data) => {
 		// let num_players = Object.keys(io.clients().connected).length
 		// clearInterval(ServerInterval.get())
+
 		let thisGame = data.gameId || gameId++
+		console.log('data', data, 'gameId', gameId)
 		client.join(thisGame)	
 		
 		
@@ -41,7 +45,7 @@ io.on('connection', (client) => {
 			gameRooms[thisGame] = []
 			console.log('initializing', data.username, 'in gameId', gameId)
 			gameRooms[thisGame].push(data.username)
-			console.log(gameRooms)
+			console.log('2',gameRooms)
 			client.emit('join game')
 
 		} else if (gameRooms[thisGame].length === 1){
@@ -59,7 +63,7 @@ io.on('connection', (client) => {
 			client.emit('spectate game', {goal: goals[gameId], usernames: gameRooms[thisGame]})
 			console.log('joining spectator', data.username, 'in gameId', gameId)
 		}
-		console.log(gameRooms)
+		console.log('3',gameRooms)
 		
 		client.on('drawing', (data) => io.to(thisGame).emit('drawing', data)),
 		client.on('endPath', (data) => io.to(thisGame).emit('endPath', data)),
@@ -72,17 +76,17 @@ io.on('connection', (client) => {
 			} else {
 				rematches[gameId] = 2
 			}
-			// console.log('playing again', data.username, rematches)
+			console.log('playing again', data.username, rematches)
 			if (rematches[gameId] === 2){
 				// console.log('rematch')
-				gameRooms[thisGame].push(data.username)
+				// gameRooms[thisGame].push(data.username)
 				goal = goal_options[Math.floor(Math.random() * goal_options.length)]
 				io.to(thisGame).emit('start game', {goal: goal, usernames: gameRooms[thisGame]})
 				rematches[gameId] = 0
 				// gameRooms[thisGame] = []
 
 			}
-			console.log(gameRooms)
+			console.log('4',gameRooms)
 		})
 		client.on('left game', () => {
 			console.log(data.username, 'left game')
@@ -96,7 +100,7 @@ io.on('connection', (client) => {
 				// }
 			}
 			io.to(thisGame).emit('opponent left')
-			console.log(gameRooms)
+			console.log('5',gameRooms)
 		})
 		client.on('disconnect', () => {
 			console.log(data.username, 'disconnected')
@@ -110,7 +114,7 @@ io.on('connection', (client) => {
 				// }
 			}
 			io.to(thisGame).emit('opponent left')
-			console.log(gameRooms)
+			console.log('6',gameRooms)
 		})
 	})
 })
