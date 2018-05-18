@@ -7,6 +7,9 @@ import { enterGame, updateRooms, spectateGame, connectSocket } from '../actions/
 class Lobby extends React.Component {
 	constructor(props){
 		super()
+		if (!props.user){
+	        props.history.push('/login')
+	      }
 		// console.log('lobby constructor', props)
 		// this.state = {
 			// goal: '',
@@ -32,10 +35,12 @@ class Lobby extends React.Component {
 		// setTimeout(this.enterGame, 5000)
 	}
 
-	componentDidMount(){
+	// componentDidMount(){
 		// console.log(this.props)
 		// this.props.io.on('game rooms', data => this.props.updateRooms(data))
-	}
+	// }
+
+
 
 	enterGame = () => {
 		this.props.enterGame(this.props.user.username)
@@ -69,7 +74,7 @@ class Lobby extends React.Component {
 			}
 		}
 		return <div className='lobby'>
-				<h2>Open Rooms</h2>
+				<h2>Open Games</h2>
 				{openRooms}
 				<button onClick={this.enterGame}>NEW GAME</button>
 				

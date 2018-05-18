@@ -18,7 +18,7 @@ class Signup extends React.Component{
 
 	handleSubmit = (e) => {
 		e.preventDefault()
-		console.log(this.state)
+		console.log('signup props', this.props)
 		if (this.state.password === this.state.passwordConfirmation){
 
 		} else {
@@ -32,12 +32,15 @@ class Signup extends React.Component{
 	render(){
 		// console.log(this.props)
 		return (
+			<div className='register-form'>
+			<h2>Register</h2>
 			<form onSubmit={this.handleSubmit}>
 				Username: <input name="username" value={this.state.username} onChange={this.handleChange}/><br/>
 				Password: <input type="password" name="password" value={this.state.password} onChange={this.handleChange}/><br/>
 				Confirm Password: <input type="password" name="passwordConfirmation" value={this.state.passwordConfirmation} onChange={this.handleChange}/><br/>
-				<input type='submit' name='Signup'/>
+				<input type='submit' value='Register'/>
 			</form>
+			</div>
 		)
 	}
 

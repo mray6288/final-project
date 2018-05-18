@@ -10,6 +10,9 @@ import { ConnectedScoreboard } from '../components/Scoreboard'
 class GameContainer extends React.Component {
 	constructor(props){
 		super()
+		if (!props.user){
+	        props.history.push('/login')
+	      }
 		this.state = {
 			// goal: '',
 		 //    timer: 0,
@@ -31,6 +34,7 @@ class GameContainer extends React.Component {
 
 
 		props.io.on('start game', this.startGame.bind(this))
+		props.io.on('opponent left', this.opponentLeft)
 		// console.log('num of players', this.props.io.sockets.clients().length)
 
 	}
@@ -41,6 +45,13 @@ class GameContainer extends React.Component {
 
 		
 	// }
+
+	componentWillUnmount(){
+		if (this.interval){
+			clearInterval(this.interval)
+		}
+		this.props.io.emit('left game', this.props.user)
+	}
 
 	startGame(data){
 		// console.log('data', data)
@@ -71,20 +82,22 @@ class GameContainer extends React.Component {
 	// 	this.setState({timer:this.state.timer + 1})
 	// }
 
-	endTimer() {
-		console.log('ending timer')
-		clearInterval(this.interval)
-	}
-
 	endGame = (winnerId) => {
 
-		this.endTimer()
 		// this.props.io.close()
 		this.props.endGameState(winnerId)
 		// this.setState({
 		//   gameOver: true,
 		// })
 	}
+
+	opponentLeft = () => {
+		alert('opponent left game - redirecting back to lobby')
+		this.props.history.push('/lobby')
+		setTimeout(() => this.props.history.push('/lobby'), 4000)
+	}
+
+
 
 	playAgain = () => {
 		// this.scope1 = new paper.PaperScope()

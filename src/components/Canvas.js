@@ -123,6 +123,13 @@ class Canvas extends React.Component {
 		}
 	}
 
+	componentWillUnMount(){
+		if (this.interval){
+			clearInterval(this.interval)
+		}
+		
+	}
+
 
 
 	fetchGuesses = () => {

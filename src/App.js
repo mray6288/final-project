@@ -8,7 +8,7 @@ import { ConnectedLobby } from './containers/Lobby'
 import { ConnectedSpectatorContainer } from './containers/SpectatorContainer'
 import Login from './components/Login'
 import Signup from './components/Signup'
-import {Route, withRouter} from 'react-router-dom'
+import {Route, withRouter, Switch, Link} from 'react-router-dom'
 
 
 
@@ -32,37 +32,46 @@ class App extends Component {
 
 
   
-  submitUsername = (e) => {
-    e.preventDefault()
-    this.props.login(e.target.username.value)
+  // submitUsername = (e) => {
+  //   e.preventDefault()
+  //   this.props.login(e.target.username.value)
 
 
-  }
+  // }
 
-  newGame = () => {
-    console.log('new game?', this.state)
-    this.setState({
-      gameNum: this.state.gameNum+1
-    })
-  }
-  
+  // newGame = () => {
+  //   console.log('new game?', this.state)
+  //   this.setState({
+  //     gameNum: this.state.gameNum+1
+  //   })
+  // }
 
 
 
 
     render() {
       console.log('app props at render', this.props)
-
+      
       return (
         <div className="App">
-        <button onClick={() => {
-          this.props.logout()
-          this.props.history.push('/login')
-        }}>Logout</button>
-        <Route path='/login' component={Login} />
-        <Route path='/signup' component={Signup}/>
-        <Route path='/lobby' component={ConnectedLobby}/>
-        <Route path='/game' component={ConnectedGameContainer}/>
+        <header>
+          <nav>
+            <Link to='/lobby'>Lobby</Link>
+            {this.props.user ? 
+              <button onClick={() => {
+                this.props.logout()
+                this.props.history.push('/login')
+              }}>Logout</button>
+              : ''}
+          </nav>
+        </header>
+        <Switch>
+          <Route path='/login' component={Login} />
+          <Route path='/signup' component={Signup}/>
+          <Route path='/lobby' component={ConnectedLobby}/>
+          <Route path='/game' component={ConnectedGameContainer}/>
+          <Route component={ConnectedLobby}/>
+        </Switch>
         </div>
       )
     }
@@ -71,14 +80,15 @@ class App extends Component {
 
 function mapStateToProps(state){
   return {io: state.io, 
-          gameKey: state.gameKey, 
+          gameKey: state.gameKey,
+          user: state.user
           }
 }
 
 function mapDispatchToProps(dispatch){
   return bindActionCreators({
-      // login: login,
-      logout: logout,
+      getUser: getUser
+      
     },
     dispatch
   )

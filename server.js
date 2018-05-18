@@ -35,7 +35,7 @@ io.on('connection', (client) => {
 		let thisGame = `game-${gameId}`
 		client.join(thisGame)	
 		
-		console.log(gameRooms)
+		
 		if (!gameRooms[thisGame]) {
 			gameRooms[thisGame] = []
 			console.log('initializing', user.username, 'in gameId', gameId)
@@ -58,6 +58,7 @@ io.on('connection', (client) => {
 			client.emit('spectate game', {goal: goals[gameId], usernames: gameRooms[thisGame]})
 			console.log('joining spectator', user.username, 'in gameId', gameId)
 		}
+		console.log(gameRooms)
 		
 		client.on('drawing', (data) => io.to(thisGame).emit('drawing', data)),
 		client.on('endPath', (data) => io.to(thisGame).emit('endPath', data)),
@@ -80,17 +81,24 @@ io.on('connection', (client) => {
 				// gameRooms[thisGame] = []
 
 			}
+			console.log(gameRooms)
+		})
+		client.on('left game', () => {
+			console.log(user.username, 'left game')
+			client.leave(thisGame)
+
+			if (gameRooms[thisGame]){
+				// gameRooms[thisGame] = gameRooms[thisGame].filter(name => name !== user.username)
+				
+				// if (gameRooms[thisGame].length === 0){
+				delete gameRooms[thisGame]
+				// }
+			}
+			io.to(thisGame).emit('opponent left')
+			console.log(gameRooms)
 		})
 		client.on('disconnect', () => {
-			// console.log('this game', thisGame)
-			// console.log('game rooms', gameRooms)
-			// console.log('username', user.username)
-			gameRooms[thisGame] = gameRooms[thisGame].filter(name => name !== user.username)
-			
-			if (gameRooms[thisGame].length === 0){
-				delete gameRooms[thisGame]
-			}
-			// console.log('updated game rooms', gameRooms)
+
 		})
 	})
 })
