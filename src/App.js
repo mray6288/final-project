@@ -51,6 +51,7 @@ class App extends Component {
           <Route path='/signup' component={Signup}/>
           <Route path='/lobby' component={ConnectedLobby}/>
           <Route path='/game' component={ConnectedGameContainer}/>
+          <Route path='/spectate' component={ConnectedSpectatorContainer}/>
           <Route component={Login}/>
         </Switch>
         </div>

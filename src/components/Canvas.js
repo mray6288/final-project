@@ -114,8 +114,8 @@ class Canvas extends React.Component {
 	}
 
 	componentDidUpdate(prevProps){
-		// console.log('previous', prevProps)
-		// console.log('new', this.props)
+		console.log('previous', prevProps)
+		console.log('new', this.props)
 		if (prevProps.gameOver && !this.props.gameOver){
 
 
@@ -247,7 +247,7 @@ class Canvas extends React.Component {
 	render() {
 
 		return <div className='canvas-object'  >
-		<h2 className='winner'>{this.isWinner() ? (this.isMine ? `${this.props.user.username} WINS! ${this.props.timer} SECONDS` : `${this.props.opponent} WINS! ${this.props.timer+1} SECONDS`) : <br/>}</h2>
+		<h2 className='winner'>{this.isWinner() ? (this.isMine ? `${this.props.user.username} WINS!` : `${this.props.opponent} WINS!`) : <br/>}</h2>
 		
 		<h2>AI Guess: {this.state.guess}</h2>
 		{this.state.otherCanvas}<br/>

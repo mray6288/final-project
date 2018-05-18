@@ -18,15 +18,28 @@ class SpectatorContainer extends React.Component {
 		this.scope1._id = 1
 		this.scope2._id = 2
 
+		console.log('spectator constructor')
+		props.io.on('spectate', this.spectateGame.bind(this))
+		props.io.on('start game', this.spectateGame.bind(this))
+		
+	}
 
-		props.io.on('spectate game', this.spectateGame.bind(this))
+	componentDidMount(){
+		console.log('spectator mount')
+		this.props.io.emit('spectate game')
+	}
 
+
+	componentWillUnmount(){
+		console.log('spectator will unmount')
+		this.props.io.off('spectate game')
+		this.props.io.off('start game')
 	}
 	
 
 
 	spectateGame(data){
-		// console.log('data', data)
+		console.log('spectategame data', data)
 		this.props.spectateGame(data)
 		// this.interval = setInterval(this.props.incrementTimer, 1000)
 

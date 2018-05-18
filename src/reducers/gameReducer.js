@@ -13,7 +13,7 @@ export default function(state = defaultState, action){
 			return Object.assign({}, state, {
 				user: action.user,
 				playerId,
-				
+
 			})
 		case 'LOGOUT':
 			return defaultState
@@ -55,15 +55,15 @@ export default function(state = defaultState, action){
 				playerId: playerId,
 				scoreboard: state.scoreboard
 				})
-		// case 'SPECTATE_GAME':
-		// 	debugger
-		// 	return Object.assign({}, state, {
-		// 		goal: action.data.goal,
-		// 		username: action.data.usernames[0],
-		// 		opponent: action.data.usernames[1],
-		// 		playerId: 3,
-		// 		spectator:true
-		// 	})
+		case 'SPECTATE_GAME':
+			return Object.assign({}, state, {
+				goal: action.data.goal,
+				username: action.data.usernames[1],
+				opponent: action.data.usernames[0],
+				playerId: 3,
+				gameOver: false,
+				winnerId: null,
+			})
 		case 'INCREMENT_TIMER':
 			return Object.assign({}, state, {timer: state.timer + 1})
 		case 'END_GAME':

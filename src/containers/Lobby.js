@@ -12,6 +12,7 @@ class Lobby extends React.Component {
 	      }
 	    // console.log('constructor')
 	    props.io.on('open games', data => this.props.updateGames(data))
+		props.io.on('spectate game', data => this.props.spectateGame(data))
 		// console.log('lobby constructor', props)
 		// this.state = {
 			// goal: '',
@@ -51,6 +52,7 @@ class Lobby extends React.Component {
 		// console.log('will unmount')
 		this.interval && clearInterval(this.interval)
 		this.props.io.off('open games')
+		this.props.io.off('spectate game')
 	}
 
 
@@ -64,11 +66,11 @@ class Lobby extends React.Component {
 
 	}
 
-	spectateGame = () => {
-		return null
+	spectateGame = (e) => {
+		// return null
 		// console.log('data', data)
-		this.props.io.on('spectate game', data => this.props.spectateGame(data))
-		this.props.io.emit('join game', {username: this.props.user.username})
+		this.props.history.push("/spectate")
+		this.props.io.emit('join game', {username: this.props.user.username, gameId:e.target.dataset.id})
 	}
 
 
@@ -91,7 +93,7 @@ class Lobby extends React.Component {
 			if (players.length === 1){
 				openGames.push(<button data-id={game} onClick={this.enterGame}>vs {players[0]}</button>)
 			} else {
-				spectatorGames.push(<button onClick={this.spectateGame}>{players[0]} vs {players[1]}</button>)
+				spectatorGames.push(<button data-id={game} onClick={this.spectateGame}>{players[0]} vs {players[1]}</button>)
 			}
 		}
 		
