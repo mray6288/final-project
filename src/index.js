@@ -9,12 +9,17 @@ import { Provider } from 'react-redux'
 import gameReducer from './reducers/gameReducer'
 import {BrowserRouter as Router} from 'react-router-dom'
 
+// Action Cable setup
+import actionCable from 'actioncable'
+const CableApp = {}
+CableApp.cable = actionCable.createConsumer(`ws://${window.location.hostname}:3000/cable`)
+
 let store = createStore(gameReducer, applyMiddleware(thunk))
 
 ReactDOM.render(
 	<Router>
 		<Provider store={store}>
-			<App store={store}/>
+			<App store={store} cableApp={CableApp}/>
 		</Provider>
 	</Router>, 
 	document.getElementById('root'));

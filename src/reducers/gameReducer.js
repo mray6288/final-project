@@ -1,6 +1,12 @@
 import {defaultState} from './defaultState'
 import openSocket from 'socket.io-client'
 
+// Action Cable setup
+import actionCable from 'actioncable'
+
+
+
+
 let gameKey = 0
 let playerId = 0
 
@@ -19,9 +25,17 @@ export default function(state = defaultState, action){
 			return defaultState
 		case 'CONNECT_SOCKET':
 			// console.log('socket connected')
-			let io = openSocket('https://3f26a47c.ngrok.io')
+			// const CableApp = {}
+			// CableApp.cable = 
+			const io = actionCable.createConsumer(`ws://${window.location.hostname}:3000/cable`)
+			// let io = openSocket('https://3f26a47c.ngrok.io')
 			return Object.assign({}, state, {
 				io
+			})
+		case 'TEST_SOCKET':
+			console.log('test socket results', action.payload)
+			return Object.assign({}, state, {
+				testSocket: action.payload
 			})
 		case 'UPDATE_GAMES':
 			// console.log('UPDATE GAMES ACTION', action)

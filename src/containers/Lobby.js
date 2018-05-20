@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
 import { enterGame, updateGames, spectateGame, connectSocket } from '../actions/actions'
-
+import { ConnectedGameWebSocket } from '../components/GameWebSocket'
 
 class Lobby extends React.Component {
 	constructor(props){
@@ -10,81 +10,45 @@ class Lobby extends React.Component {
 		if (!props.user){
 	        props.history.push('/login')
 	      }
-	    // console.log('constructor')
-	    props.io.on('open games', data => this.props.updateGames(data))
-		props.io.on('spectate game', data => this.props.spectateGame(data))
-		// console.log('lobby constructor', props)
-		// this.state = {
-			// goal: '',
-		 //    timer: 0,
-		    // gameOver: false,
-		    // gameStarted: false,
-		    // player: 0,
-		    // winnerId: 0,
-		// }
-
-		// console.log('new io socket')
-		// this.props.io = openSocket('https://3f26a47c.ngrok.io')//http://localhost:8000')
-		// props.io.on('initialize game', (data) => this.playerId = data.playerId)
-		// props.io.emit('initialize game', {username: props.user.username})
-		// props.io.on('increment timer', this.incrementTimer.bind(this))
-
-		
-
-
-		// props.io.on('start game', this.startGame.bind(this))
-		// console.log('num of players', this.props.io.sockets.clients().length)
-		// setTimeout(this.enterGame, 5000)
+	 //    props.io.on('open games', data => this.props.updateGames(data))
+		// props.io.on('spectate game', data => this.props.spectateGame(data))
 	}
+		
 
 
-	componentDidMount(){
-		// console.log('did mount')
+	// componentDidMount(){
 		
 		
-		this.props.io.emit('open games')
-		this.interval = setInterval(() => this.props.io.emit('open games'), 3000)
+	// 	this.props.io.emit('open games')
+	// 	this.interval = setInterval(() => this.props.io.emit('open games'), 3000)
 		
 		
-	}
+	// }
 
-	componentWillUnmount(){
-		// console.log('will unmount')
-		this.interval && clearInterval(this.interval)
-		this.props.io.off('open games')
-		this.props.io.off('spectate game')
-	}
-
+	// componentWillUnmount(){
+	// 	this.interval && clearInterval(this.interval)
+	// 	this.props.io.off('open games')
+	// 	this.props.io.off('spectate game')
+	// }
 
 
-	enterGame = (e) => {
-		this.props.enterGame(this.props.user.username)
-		// console.log(e)
+
+	// enterGame = (e) => {
+	// 	this.props.enterGame(this.props.user.username)
 		
-		this.props.history.push("/game")
-		this.props.io.emit('join game', {username: this.props.user.username, gameId:e.target.dataset.id})
+	// 	this.props.history.push("/game")
+	// 	this.props.io.emit('join game', {username: this.props.user.username, gameId:e.target.dataset.id})
 
-	}
+	// }
 
-	spectateGame = (e) => {
-		// return null
-		// console.log('data', data)
-		this.props.history.push("/spectate")
-		this.props.io.emit('join game', {username: this.props.user.username, gameId:e.target.dataset.id})
-	}
+	// spectateGame = (e) => {
+
+	// 	this.props.history.push("/spectate")
+	// 	this.props.io.emit('join game', {username: this.props.user.username, gameId:e.target.dataset.id})
+	// }
 
 
 	render(){
-		// console.log('lobby render', this.props)
-		// if(this.props.io){
-		// 	if (!this.interval) {
-		// 		this.props.io.on('open games', data => this.props.updateGames(data))
-		// 		this.props.io.emit('open games')
-		// 	}else {
-		// 		clearInterval(this.interval)
-		// 		this.interval = setInterval(() => this.props.io.emit('open games'), 3000)
-		// 	}
-		// }
 
 		let openGames = []
 		let spectatorGames = []
@@ -97,12 +61,15 @@ class Lobby extends React.Component {
 			}
 		}
 		
+		
 		return <div className='lobby'>
+				<ConnectedGameWebSocket />
 				<h2>Open Games</h2>
 				{openGames}<br/>
 				<button onClick={this.enterGame}>NEW GAME</button>
 				<h2>Spectate Games</h2>
 				{spectatorGames}
+				<h2>Logged In Users: {this.props.testSocket[0]}</h2>
 				
 				</div>
 	}
@@ -113,7 +80,7 @@ function mapStateToProps(state){
 	return {io: state.io,
 			user: state.user,
 			openGames: state.openGames,
-
+			testSocket: state.testSocket,
 		 	goal: state.goal,
 		 	timer: state.timer,
 		 	gameKey: state.gameKey, 

@@ -4,6 +4,13 @@ const headers = {
 	"Content-Type": "application/json"
 }
 
+export function socketCallback(payload){
+	console.log('socket callback function')
+	return {
+		type: 'TEST_SOCKET',
+		payload
+	}
+}
 
 export function updateGames(games){
 	// console.log('actions games', games)

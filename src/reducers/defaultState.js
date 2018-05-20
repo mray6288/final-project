@@ -9,5 +9,6 @@ export const defaultState = {
 	username: null,
 	opponent: null,
 	scoreboard: {},
-	openRooms: {}
+	openRooms: {},
+	testSocket: []
 }
