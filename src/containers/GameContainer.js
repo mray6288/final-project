@@ -139,7 +139,7 @@ class GameContainer extends React.Component {
 		let game = (
 				<div className='game-container'> 
 				<ConnectedScoreboard />
-				<h1>Your Goal: {this.props.goal}</h1>
+				<h1>Draw a {this.props.goal}</h1>
 	        	<h1>{this.props.gameOver ? <button onClick={this.playAgain}>Play Again</button> : `Timer: ${this.props.timer}`}</h1>
 
 	        	{canvases}

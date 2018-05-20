@@ -87,6 +87,7 @@ io.on('connection', (client) => {
 					// console.log('rematch')
 					// gameRooms[thisGame].push(data.username)
 					goal = goal_options[Math.floor(Math.random() * goal_options.length)]
+					goals[gameId] = goal
 					io.to(thisGame).emit('start game', {goal: goal, usernames: gameRooms[thisGame]})
 					rematches[thisGame] = 0
 					// gameRooms[thisGame] = []

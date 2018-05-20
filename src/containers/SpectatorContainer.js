@@ -25,13 +25,13 @@ class SpectatorContainer extends React.Component {
 	}
 
 	componentDidMount(){
-		console.log('spectator mount')
+		// console.log('spectator mount')
 		this.props.io.emit('spectate game')
 	}
 
 
 	componentWillUnmount(){
-		console.log('spectator will unmount')
+		// console.log('spectator will unmount')
 		this.props.io.off('spectate game')
 		this.props.io.off('start game')
 	}
@@ -39,7 +39,7 @@ class SpectatorContainer extends React.Component {
 
 
 	spectateGame(data){
-		console.log('spectategame data', data)
+		// console.log('spectategame data', data)
 		this.props.spectateGame(data)
 		// this.interval = setInterval(this.props.incrementTimer, 1000)
 
@@ -93,7 +93,7 @@ class SpectatorContainer extends React.Component {
 	render() {
 		// console.log('scope1', this.scope1)
 		// console.log('scope2', this.scope2)
-		console.log('spectate container render', this.props)
+		// console.log('spectate container render', this.props)
 		// console.log('playerId', this.props.username, this.playerId)
 		
 		// <Canvas username={this.props.username} opponent={this.props.opponent} gameOver={this.props.gameOver} playerId={this.playerId} io={this.props.io} scope={this.scope1} goal={this.props.goal} timer={this.props.timer} endGame={this.endGame}/>

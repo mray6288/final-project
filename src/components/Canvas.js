@@ -114,8 +114,8 @@ class Canvas extends React.Component {
 	}
 
 	componentDidUpdate(prevProps){
-		console.log('previous', prevProps)
-		console.log('new', this.props)
+		// console.log('previous', prevProps)
+		// console.log('new', this.props)
 		if (prevProps.gameOver && !this.props.gameOver){
 
 
@@ -227,7 +227,8 @@ class Canvas extends React.Component {
 	}
 
 	clearCanvas = (data) => {
-		if (data.id !== this.canvasId){
+		if (data.id !== this.canvasId ){
+			console.log(data.id, this.canvasId)
 			return null
 		}
 		this.paperSetup.project.activeLayer.clear()
