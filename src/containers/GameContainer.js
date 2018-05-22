@@ -16,10 +16,10 @@ class GameContainer extends React.Component {
 	        props.history.push('/lobby')
 	      }
 		this.state = {
-
+			willRematch: false
 		}
 
-		this.willRematch = false
+		
 		// this.props.scope1 = new paper.PaperScope()
 		// this.props.scope2 = new paper.PaperScope()
 		// this.props.scope1._id = 1
@@ -38,7 +38,6 @@ class GameContainer extends React.Component {
 	      }
 		console.log('game container did mount', this.props)
 		this.channel = this.props.io.subscriptions.subscriptions[0]
-		// console.log(this.channel)
 	}
 
 
@@ -77,11 +76,19 @@ class GameContainer extends React.Component {
 	// 	setTimeout(() => this.props.history.push('/lobby'), 4000)
 	// }
 
-
+	componentWillUpdate(){
+		if(this.props.timer === 0 && this.state.willRematch){
+			this.setState({
+				willRematch: false
+			})
+		}
+	}
 
 	playAgain = (e) => {
 		this.channel.perform('play_again', {game_id:this.props.gameId})
-		this.willRematch = true
+		this.setState({
+			willRematch: true
+		})
 		// this.props.io.emit('playAgain')
 		// this.props.playAgain()
 		
@@ -108,7 +115,7 @@ class GameContainer extends React.Component {
 				<div className='game-container'> 
 				<ConnectedScoreboard />
 				<h1>Draw a {this.props.goal}</h1>
-	        	<h1>{this.props.gameOver ? (this.willRematch || this.props.spectator ? 'Waiting for next game' : <button onClick={this.playAgain}>Play Again</button>) : `Timer: ${this.props.timer}`}</h1>
+	        	{this.props.gameOver ? (this.state.willRematch || this.props.spectator ? 'Waiting for next game' : <button onClick={this.playAgain}>Play Again</button>) : <h1>Timer: {this.props.timer}</h1>}
 
 	        	{canvases}
 	        	</div>
