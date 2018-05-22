@@ -81,7 +81,7 @@ class GameContainer extends React.Component {
 
 	playAgain = (e) => {
 		this.channel.perform('play_again', {game_id:this.props.gameId})
-
+		this.willRematch = true
 		// this.props.io.emit('playAgain')
 		// this.props.playAgain()
 		
