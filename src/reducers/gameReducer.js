@@ -25,7 +25,7 @@ export default function(state = defaultState, action){
 				io: state.io
 			})
 		case 'CONNECT_SOCKET':
-			const io = actionCable.createConsumer(`wss://ray-final-project-backend.herokuapp.com/cable`)
+			const io = actionCable.createConsumer('wss://2eaa314f.ngrok.io')//`wss://ray-final-project-backend.herokuapp.com/cable`)
 			return Object.assign({}, state, {
 				io
 			})
