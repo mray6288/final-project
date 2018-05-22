@@ -108,7 +108,7 @@ class GameContainer extends React.Component {
 				<div className='game-container'> 
 				<ConnectedScoreboard />
 				<h1>Draw a {this.props.goal}</h1>
-	        	<h1>{this.props.gameOver ? (this.willRematch ? 'Waiting for opponent' : <button onClick={this.playAgain}>Play Again</button>) : `Timer: ${this.props.timer}`}</h1>
+	        	<h1>{this.props.gameOver ? (this.willRematch || this.props.spectator ? 'Waiting for next game' : <button onClick={this.playAgain}>Play Again</button>) : `Timer: ${this.props.timer}`}</h1>
 
 	        	{canvases}
 	        	</div>
@@ -134,7 +134,8 @@ function mapStateToProps(state){
 		 	player2: state.player2,
 		 	scope1: state.scope1,
 		 	scope2: state.scope2,
-		 	gameId: state.gameId
+		 	gameId: state.gameId,
+		 	spectator: state.spectator
 
 		 }
 }

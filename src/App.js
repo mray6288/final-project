@@ -41,11 +41,15 @@ class App extends Component {
           <nav>
             <Link to='/lobby'>Lobby</Link>
             {this.props.user ? 
+              <div>
               <button onClick={() => {
                 this.props.logout()
                 this.props.history.push('/login')
               }}>Logout</button>
+              Logged in as {this.props.user.username}
+              </div>
               : ''}
+
           </nav>
         </header>
         <Switch>

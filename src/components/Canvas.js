@@ -263,7 +263,7 @@ class Canvas extends React.Component {
 		// console.log('canvas name', this.props.scope.name)
 
 		return <div className='canvas-object'  >
-		<h2 className='winner'>{this.isWinner() ? (this.isMine ? `${this.props.user.username} WINS!` : `${this.props.opponent} WINS!`) : <br/>}</h2>
+		<h2 className='winner'>{this.isWinner() ? `${this.props.scope.name} WINS!` : <br/>}</h2>
 		
 		<h2>AI Guess: {this.props.scope.name === this.props.player1 ? this.props.guess1 : this.props.guess2}</h2>
 		<br/>
