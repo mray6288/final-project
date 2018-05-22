@@ -14,30 +14,26 @@ let playerId = 0
 export default function(state = defaultState, action){
 	switch(action.type){
 		case 'LOGIN':
-			playerId++
-			// let io = openSocket('https://3f26a47c.ngrok.io')
-			// console.log('username set', action.user)
+			playerId++			
 			return Object.assign({}, state, {
 				user: action.user,
 				playerId,
 
 			})
 		case 'LOGOUT':
-			return defaultState
+			return Object.assign({}, defaultState, {
+				io: state.io
+			})
 		case 'CONNECT_SOCKET':
-			// console.log('socket connected')
-			// const CableApp = {}
-			// CableApp.cable = 
-			const io = actionCable.createConsumer(`ws://${window.location.hostname}:3000/cable`)
-			// let io = openSocket('https://3f26a47c.ngrok.io')
+			const io = actionCable.createConsumer(`ws://ray-final-project-backend.herokuapp.com/cable`)
 			return Object.assign({}, state, {
 				io
 			})
-		// case 'TEST_SOCKET':
-		// 	console.log('test socket results', action.payload)
-		// 	return Object.assign({}, state, {
-		// 		testSocket: action.payload
-		// 	})
+		case 'RESET_GAME_DATA':
+			return Object.assign({}, defaultState, {
+				io: state.io,
+				user: state.user
+			})
 		case 'UPDATE_GAMES':
 			console.log('UPDATE GAMES ACTION', action)
 			return Object.assign({}, state, {openGames: action.games})
@@ -92,7 +88,7 @@ export default function(state = defaultState, action){
 			scope22.name = action.game.player2
 			return Object.assign({}, state, {
 				goal: action.game.target,
-				timer: 0,
+				timer: action.game.timer,
 				player1: action.game.player1,
 				player2: action.game.player2,
 				scope1: scope11,
@@ -105,7 +101,7 @@ export default function(state = defaultState, action){
 			})
 		case 'UPDATE_TIMER_AND_GUESSES':
 			return Object.assign({}, state, {
-				timer: state.timer + 1,
+				timer: action.data.timer,
 				guess1: action.data.guess1,
 				guess2: action.data.guess2
 			})
@@ -117,7 +113,7 @@ export default function(state = defaultState, action){
 				newScoreboard[state.player1] = state.scoreboard[state.player1] + 1
 				newScoreboard[state.player2] = state.scoreboard[state.player2]
 			} else {
-				newScoreboard[state.player] = state.scoreboard[state.player1]
+				newScoreboard[state.player1] = state.scoreboard[state.player1]
 				newScoreboard[state.player2] = state.scoreboard[state.player2] + 1
 			}
 
@@ -125,7 +121,7 @@ export default function(state = defaultState, action){
 				gameOver: true,
 				winnerName: action.winnerName,
 				scoreboard: newScoreboard,
-				// goal: ''
+				
 			})
 		case 'PLAY_AGAIN':
 			return Object.assign({}, state, {

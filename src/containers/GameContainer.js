@@ -90,7 +90,7 @@ class GameContainer extends React.Component {
 		console.log('game container render', this.props)
 		
 		let canvases = null
-        if (this.props.playerId === 1){
+        if (this.props.user.username === this.props.player1){
         	canvases = <div><ConnectedCanvas scope={this.props.scope1} endGame={this.endGame} />
 				<ConnectedCanvas scope={this.props.scope2} endGame={this.endGame} />
 				</div>

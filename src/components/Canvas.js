@@ -253,7 +253,7 @@ class Canvas extends React.Component {
 
 
 	isWinner() {
-		debugger
+		
 		return this.props.winnerName === this.props.scope.name
 	}
 
@@ -280,7 +280,6 @@ function mapStateToProps(state){
 		 	timer: state.timer,
 		 	gameOver: state.gameOver,
 		 	opponent: state.opponent,
-		 	playerId: state.playerId,
 		 	user: state.user,
 		 	winnerName: state.winnerName,
 		 	player1: state.player1,

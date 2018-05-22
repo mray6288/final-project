@@ -27,11 +27,13 @@ class App extends Component {
       .then(() => {
         this.props.history.push('/lobby')
       })
-    } 
+    } else {
+      this.props.history.push('/login')
+    }
   }
 
     render() {
-      // console.log('app props at render', this.props)
+      console.log('app props at render', this.props)
       
       return (
         <div className="App">
@@ -52,7 +54,7 @@ class App extends Component {
           <Route path='/lobby' component={ConnectedLobby}/>
           <Route path='/game/:id' component={ConnectedGameContainer}/>
           <Route path='/spectate/:id' component={ConnectedSpectatorContainer}/>
-          <Route component={Login}/>
+          <Route component={ConnectedLobby}/>
         </Switch>
         </div>
       )

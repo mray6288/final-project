@@ -7,16 +7,20 @@ import { ConnectedLobbyWebSocket } from '../components/LobbyWebSocket'
 class Lobby extends React.Component {
 	constructor(props){
 		super()
-		if (!props.user){
-	        props.history.push('/login')
-	      }
+		// if (!props.user){
+	 //        props.history.push('/login')
+	 //      }
 	 //    props.io.on('open games', data => this.props.updateGames(data))
 		// props.io.on('spectate game', data => this.props.spectateGame(data))
 	}
 		
 
 
-	// componentDidMount(){
+	componentDidMount(){
+		// if (!this.props.user){
+	 //        this.props.history.push('/login')
+	 //      }
+	  }
 		
 		
 	// 	this.props.io.emit('open games')
@@ -101,7 +105,6 @@ function mapStateToProps(state){
 		 	gameId: state.gameId, 
 		 	gameOver: state.gameOver,
 		 	opponent: state.opponent,
-		 	playerId: state.playerId,
 		 	
 		 }
 }
