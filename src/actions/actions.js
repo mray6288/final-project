@@ -1,5 +1,5 @@
-const API_URL = "https://ray-final-project-backend.herokuapp.com/api/v1"
-// const API_URL = "http://localhost:3000/api/v1"
+// const API_URL = "https://ray-final-project-backend.herokuapp.com/api/v1"
+const API_URL = "http://localhost:3000/api/v1"
 const headers = { 
 	"Content-Type": "application/json"
 }
@@ -13,7 +13,6 @@ export function socketCallback(payload){
 }
 
 export function updateGames(games){
-	// console.log('actions games', games)
 	return {
 		type: 'UPDATE_GAMES',
 		games
@@ -34,37 +33,46 @@ export function enterGame(){
   };
 };
 
-export function startGame(data){
+export function startGame(game){
 	return {
 		type: 'START_GAME',
-		data
+		game
 	}
 }
 
-export function spectateGame(data){
+export function spectateGame(id){
 	return {
 		type: 'SPECTATE_GAME',
+		id
+	}
+}
+
+export function startSpectating(game){
+	return {
+		type: 'START_SPECTATING',
+		game
+	}
+}
+
+export function updateTimerAndGuesses(data){
+	// console.log('updateTimerAndGuesses action')
+	return {
+		type: 'UPDATE_TIMER_AND_GUESSES',
 		data
 	}
 }
 
-export function incrementTimer(){
-	return {
-		type: 'INCREMENT_TIMER',
-	}
-}
-
-export function endGameState(winnerId){
+export function endGameState(winnerName){
 	return {
 		type: 'END_GAME',
-		winnerId
+		winnerName
 	}
 }
 
-export function playAgain(guess){
+export function playAgain(target){
 	return {
 		type: 'PLAY_AGAIN',
-		guess
+		target
 	}
 }
 
@@ -73,6 +81,42 @@ export function connectSocket(){
 		type: 'CONNECT_SOCKET',
 	}
 }
+
+export function createGame(user){
+	return (dispatch) => {
+		return fetch(API_URL + "/games", {
+			method: "POST",
+			headers: headers,
+			body: JSON.stringify({player1: user.username})
+		})
+		.then(res => res.json())
+		.then(game => {
+			dispatch({
+				type: "ENTER_GAME", 
+				game: game
+			})
+		})
+	}
+}
+
+export function joinGame(user, gameId){
+	console.log('join game', user, gameId)
+	return (dispatch) => {
+		return fetch(API_URL + `/games/${gameId}`, {
+			method: "PATCH",
+			headers: headers,
+			body: JSON.stringify({player2: user.username})
+		})
+		.then(res => res.json())
+		.then(game => {
+			dispatch({
+				type: "ENTER_GAME", 
+				game: game
+			})
+		})
+	}
+}
+
 
 //login stuff
 
@@ -93,7 +137,7 @@ export function login(username, password){
 		})
 		.then(res => res.json())
 		.then(user => {
-			console.log("LOGGING IN", user)
+			// console.log("LOGGING IN", user)
 			localStorage.setItem("token", user.jwt)
 			dispatch({
 				type: "LOGIN", 
@@ -112,7 +156,7 @@ export function signup(username, password){
 		})
 		.then(res => res.json())
 		.then(user => {
-			console.log("LOGGING IN", user)
+			// console.log("LOGGING IN", user)
 			localStorage.setItem("token", user.jwt)
 			dispatch({
 				type: "LOGIN", 

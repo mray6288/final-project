@@ -50,8 +50,8 @@ class App extends Component {
           <Route path='/login' component={Login} />
           <Route path='/signup' component={Signup}/>
           <Route path='/lobby' component={ConnectedLobby}/>
-          <Route path='/game' component={ConnectedGameContainer}/>
-          <Route path='/spectate' component={ConnectedSpectatorContainer}/>
+          <Route path='/game/:id' component={ConnectedGameContainer}/>
+          <Route path='/spectate/:id' component={ConnectedSpectatorContainer}/>
           <Route component={Login}/>
         </Switch>
         </div>
@@ -62,7 +62,6 @@ class App extends Component {
 
 function mapStateToProps(state){
   return {io: state.io, 
-          gameKey: state.gameKey,
           user: state.user
           }
 }

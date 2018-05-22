@@ -1,8 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
-import { enterGame, updateGames, spectateGame, connectSocket } from '../actions/actions'
-import { ConnectedGameWebSocket } from '../components/GameWebSocket'
+import { createGame, joinGame, updateGames, spectateGame, connectSocket } from '../actions/actions'
+import { ConnectedLobbyWebSocket } from '../components/LobbyWebSocket'
 
 class Lobby extends React.Component {
 	constructor(props){
@@ -33,8 +33,8 @@ class Lobby extends React.Component {
 
 
 
-	// enterGame = (e) => {
-	// 	this.props.enterGame(this.props.user.username)
+	// createGame = (e) => {
+	// 	this.props.createGame(this.props.user.username)
 		
 	// 	this.props.history.push("/game")
 	// 	this.props.io.emit('join game', {username: this.props.user.username, gameId:e.target.dataset.id})
@@ -47,29 +47,44 @@ class Lobby extends React.Component {
 	// 	this.props.io.emit('join game', {username: this.props.user.username, gameId:e.target.dataset.id})
 	// }
 
+	createGame = () => {
+
+		this.props.createGame(this.props.user)
+		.then(() => this.props.history.push(`/game/${this.props.gameId}`))
+	}
+
+	joinGame = (e) => {
+		e.persist()
+		this.props.joinGame(this.props.user, e.target.dataset.id)
+		.then(() => this.props.history.push(`/game/${e.target.dataset.id}`))
+	}
+
+	spectateGame = (e) => {
+		e.persist()
+		this.props.spectateGame(e.target.dataset.id)
+		this.props.history.push(`/game/${e.target.dataset.id}`)
+	}
 
 	render(){
 
 		let openGames = []
 		let spectatorGames = []
-		for(let game in this.props.openGames){
-			let players = this.props.openGames[game]
-			if (players.length === 1){
-				openGames.push(<button data-id={game} onClick={this.enterGame}>vs {players[0]}</button>)
+		for(let game of this.props.openGames){
+			if (!game.player2){
+				openGames.push(<button data-id={game.id} onClick={this.joinGame}>vs {game.player1}</button>)
 			} else {
-				spectatorGames.push(<button data-id={game} onClick={this.spectateGame}>{players[0]} vs {players[1]}</button>)
+				spectatorGames.push(<button data-id={game.id} onClick={this.spectateGame}>{game.player1} vs {game.player2}</button>)
 			}
 		}
 		
 		
 		return <div className='lobby'>
-				<ConnectedGameWebSocket />
+				<ConnectedLobbyWebSocket />
 				<h2>Open Games</h2>
 				{openGames}<br/>
-				<button onClick={this.enterGame}>NEW GAME</button>
+				<button onClick={this.createGame}>NEW GAME</button>
 				<h2>Spectate Games</h2>
 				{spectatorGames}
-				<h2>Logged In Users: {this.props.testSocket[0]}</h2>
 				
 				</div>
 	}
@@ -83,7 +98,7 @@ function mapStateToProps(state){
 			testSocket: state.testSocket,
 		 	goal: state.goal,
 		 	timer: state.timer,
-		 	gameKey: state.gameKey, 
+		 	gameId: state.gameId, 
 		 	gameOver: state.gameOver,
 		 	opponent: state.opponent,
 		 	playerId: state.playerId,
@@ -93,10 +108,11 @@ function mapStateToProps(state){
 
 function mapDispatchToProps(dispatch){
 	return bindActionCreators({
-		enterGame: enterGame,
+		createGame: createGame,
 		updateGames: updateGames,
 		spectateGame: spectateGame,
-		connectSocket: connectSocket
+		connectSocket: connectSocket,
+		joinGame: joinGame
 	}, dispatch)
 }
 

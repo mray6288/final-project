@@ -3,6 +3,7 @@ import openSocket from 'socket.io-client'
 
 // Action Cable setup
 import actionCable from 'actioncable'
+import paper from '../../node_modules/paper/dist/paper-core.js'
 
 
 
@@ -32,79 +33,106 @@ export default function(state = defaultState, action){
 			return Object.assign({}, state, {
 				io
 			})
-		case 'TEST_SOCKET':
-			console.log('test socket results', action.payload)
-			return Object.assign({}, state, {
-				testSocket: action.payload
-			})
+		// case 'TEST_SOCKET':
+		// 	console.log('test socket results', action.payload)
+		// 	return Object.assign({}, state, {
+		// 		testSocket: action.payload
+		// 	})
 		case 'UPDATE_GAMES':
-			// console.log('UPDATE GAMES ACTION', action)
+			console.log('UPDATE GAMES ACTION', action)
 			return Object.assign({}, state, {openGames: action.games})
 		case 'ENTER_GAME':
-			
-			gameKey++
-			
+			console.log('ENTER GAME REDUCER', action)
 			return Object.assign({}, state, {
-				gameKey, 
+				gameId: action.game.id
 				
 			})
 		case 'START_GAME':
+			console.log('start game reducer', action)
 			let opponent = null
 			let playerId = 0
-			if (action.data.usernames[0] === state.user.username){
-				opponent = action.data.usernames[1]
+			if (action.game.player1 === state.user.username){
+				opponent = action.game.player2
 				playerId = 1
 			} else {
-				opponent = action.data.usernames[0]
+				opponent = action.game.player1
 				playerId = 2
 			}
-			if (state.scoreboard[state.user.username] === undefined){
-				state.scoreboard[state.user.username] = 0
-				state.scoreboard[opponent] = 0
-			}
+			let scope1 = new paper.PaperScope()
+			let scope2 = new paper.PaperScope()
+
+			scope1.name = action.game.player1
+			scope2.name = action.game.player2
 			return Object.assign({}, state, {
-				goal: action.data.goal,
+				goal: action.game.target,
 				timer: 0,
 				opponent: opponent,
 				playerId: playerId,
-				scoreboard: state.scoreboard
-				})
-		case 'SPECTATE_GAME':
-			return Object.assign({}, state, {
-				goal: action.data.goal,
-				username: action.data.usernames[1],
-				opponent: action.data.usernames[0],
-				playerId: 3,
-				gameOver: false,
-				winnerId: null,
+				player1: action.game.player1,
+				player2: action.game.player2,
+				scope1: scope1,
+				scope2: scope2,
+				scoreboard: {
+					[action.game.player1]:action.game.player1_score,
+					[action.game.player2]:action.game.player2_score,
+				}
 			})
-		case 'INCREMENT_TIMER':
-			return Object.assign({}, state, {timer: state.timer + 1})
+		case 'SPECTATE_GAME':
+			console.log('spectate game reducer', action)
+			return Object.assign({}, state, {
+				gameId: action.id,
+				spectator: true
+			})
+		case 'START_SPECTATING':
+			console.log('start spectating reducer', action)
+			let scope11 = new paper.PaperScope()
+			let scope22 = new paper.PaperScope()
+
+			scope11.name = action.game.player1
+			scope22.name = action.game.player2
+			return Object.assign({}, state, {
+				goal: action.game.target,
+				timer: 0,
+				player1: action.game.player1,
+				player2: action.game.player2,
+				scope1: scope11,
+				scope2: scope22,
+				scoreboard: {
+					[action.game.player1]:action.game.player1_score,
+					[action.game.player2]:action.game.player2_score,
+				}
+
+			})
+		case 'UPDATE_TIMER_AND_GUESSES':
+			return Object.assign({}, state, {
+				timer: state.timer + 1,
+				guess1: action.data.guess1,
+				guess2: action.data.guess2
+			})
 		case 'END_GAME':
-			// let winner = ''
-			let scoreboard = {}
-			if (action.winnerId === state.playerId){
-				scoreboard[state.user.username] = state.scoreboard[state.user.username] + 1
-				scoreboard[state.opponent] = state.scoreboard[state.opponent]
+			// console.log(action)
+			let newScoreboard = {}
+
+			if (action.winnerName === state.player1){
+				newScoreboard[state.player1] = state.scoreboard[state.player1] + 1
+				newScoreboard[state.player2] = state.scoreboard[state.player2]
 			} else {
-				scoreboard[state.user.username] = state.scoreboard[state.user.username]
-				scoreboard[state.opponent] = state.scoreboard[state.opponent] + 1
+				newScoreboard[state.player] = state.scoreboard[state.player1]
+				newScoreboard[state.player2] = state.scoreboard[state.player2] + 1
 			}
 
 			return Object.assign({}, state, {
 				gameOver: true,
-				winnerId: action.winnerId,
-				scoreboard: scoreboard,
+				winnerName: action.winnerName,
+				scoreboard: newScoreboard,
 				// goal: ''
 			})
 		case 'PLAY_AGAIN':
-			gameKey++
 			return Object.assign({}, state, {
-				gameKey,
 				gameOver: false,
 				timer: 0,
-				winnerId: null,
-				goal: 'waiting for opponent'
+				winnerName: null,
+				goal: action.target
 			})
 		case 'RESET_GAME_PROPS':
 			return Object.assign({}, state, {
@@ -112,7 +140,7 @@ export default function(state = defaultState, action){
 				timer: 0,
 				gameOver: false,
 				gameKey: null,
-				winnerId: null,
+				winnerName: null,
 				opponent: null,
 				scoreboard: {}
 
