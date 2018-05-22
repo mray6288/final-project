@@ -6,7 +6,8 @@ import actionCable from 'actioncable'
 import paper from '../../node_modules/paper/dist/paper-core.js'
 
 
-
+const webSocketURL = 'wss://ray-final-project-backend.herokuapp.com/cable'
+// const webSocketURL = 'wss://2eaa314f.ngrok.io'
 
 let gameKey = 0
 let playerId = 0
@@ -25,7 +26,7 @@ export default function(state = defaultState, action){
 				io: state.io
 			})
 		case 'CONNECT_SOCKET':
-			const io = actionCable.createConsumer('wss://2eaa314f.ngrok.io')//`wss://ray-final-project-backend.herokuapp.com/cable`)
+			const io = actionCable.createConsumer(webSocketURL)
 			return Object.assign({}, state, {
 				io
 			})
