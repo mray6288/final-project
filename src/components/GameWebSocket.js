@@ -22,6 +22,7 @@ class GameWebSocket extends React.Component {
           switch (data.type){
             case 'new subscriber':
               this.isPlayer1 = data.game.player1 === this.props.user.username
+              console.log('is player1?', this.isPlayer1)
               if(data.game.player2){
                 console.log('start game data', data.game)
                 if (data.isPlayer){
