@@ -18,6 +18,8 @@ class GameContainer extends React.Component {
 		this.state = {
 
 		}
+
+		this.willRematch = false
 		// this.props.scope1 = new paper.PaperScope()
 		// this.props.scope2 = new paper.PaperScope()
 		// this.props.scope1._id = 1
@@ -106,7 +108,7 @@ class GameContainer extends React.Component {
 				<div className='game-container'> 
 				<ConnectedScoreboard />
 				<h1>Draw a {this.props.goal}</h1>
-	        	<h1>{this.props.gameOver ? <button onClick={this.playAgain}>Play Again</button> : `Timer: ${this.props.timer}`}</h1>
+	        	<h1>{this.props.gameOver ? (this.willRematch ? Waiting for opponent : <button onClick={this.playAgain}>Play Again</button>) : `Timer: ${this.props.timer}`}</h1>
 
 	        	{canvases}
 	        	</div>
