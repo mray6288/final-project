@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
 import { getUser, logout, connectSocket } from './actions/actions'
 import { ConnectedLobby } from './containers/Lobby'
-import { ConnectedSpectatorContainer } from './containers/SpectatorContainer'
 import Login from './components/Login'
 import Signup from './components/Signup'
 import {Route, withRouter, Switch, Link} from 'react-router-dom'
@@ -53,7 +52,6 @@ class App extends Component {
         <Route path='/signup' component={Signup}/>
         <Route path='/lobby' component={ConnectedLobby}/>
         <Route path='/game/:id' component={ConnectedGameContainer}/>
-        <Route path='/spectate/:id' component={ConnectedSpectatorContainer}/>
         <Route component={ConnectedLobby}/>
       </Switch>
       </div>
