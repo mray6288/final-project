@@ -5,14 +5,6 @@ const headers = {
 	"Content-Type": "application/json"
 }
 
-export function socketCallback(payload){
-	console.log('socket callback function')
-	return {
-		type: 'TEST_SOCKET',
-		payload
-	}
-}
-
 export function resetGameData(){
 	return {
 		type: 'RESET_GAME_DATA'
@@ -23,13 +15,6 @@ export function updateGames(games){
 	return {
 		type: 'UPDATE_GAMES',
 		games
-	}
-}
-
-export function resetGameProps(){
-	// console.log('actions games', games)
-	return {
-		type: 'RESET_GAME_PROPS',
 	}
 }
 
@@ -124,10 +109,7 @@ export function joinGame(user, gameId){
 	}
 }
 
-
 //login stuff
-
-
 
 // function authedHeaders(){
 // 	return {

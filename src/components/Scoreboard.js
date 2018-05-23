@@ -4,12 +4,11 @@ import { connect } from 'react-redux';
 class Scoreboard extends React.Component {
 
 	render(){
-		console.log('scoreboard render', this.props)
+		// console.log('scoreboard render', this.props)
 		let scoreboard = []
 		for(let name in this.props.scoreboard){
 			scoreboard.push(<p key={name}>{name}: {this.props.scoreboard[name]}</p>)
 		}
-		
 		
 		return (
 			<div className='scoreboard-container'>

@@ -18,13 +18,12 @@ class Signup extends React.Component{
 
 	handleSubmit = (e) => {
 		e.preventDefault()
-		console.log('signup props', this.props)
+		// console.log('signup props', this.props)
 		if (this.state.password === this.state.passwordConfirmation){
 
 		} else {
 			alert("Password and Confirmation don't match")
 		}
-
 		this.props.signup(this.state.username, this.state.password)
 		.then(()=> this.props.history.push("/lobby"))
 	}
@@ -43,7 +42,6 @@ class Signup extends React.Component{
 			</div>
 		)
 	}
-
 }
 
 

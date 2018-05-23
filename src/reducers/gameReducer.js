@@ -1,26 +1,17 @@
 import {defaultState} from './defaultState'
-import openSocket from 'socket.io-client'
-
-// Action Cable setup
 import actionCable from 'actioncable'
 import paper from '../../node_modules/paper/dist/paper-core.js'
-
 
 const webSocketURL = 'wss://ray-final-project-backend.herokuapp.com/cable'
 // const webSocketURL = 'wss://2eaa314f.ngrok.io'
 // const webSocketURL = 'http://localhost:3000/cable'
 
-let gameKey = 0
-let playerId = 0
 
 export default function(state = defaultState, action){
 	switch(action.type){
 		case 'LOGIN':
-			playerId++			
 			return Object.assign({}, state, {
 				user: action.user,
-				playerId,
-
 			})
 		case 'LOGOUT':
 			return Object.assign({}, defaultState, {
@@ -37,16 +28,15 @@ export default function(state = defaultState, action){
 				user: state.user
 			})
 		case 'UPDATE_GAMES':
-			console.log('UPDATE GAMES ACTION', action)
+			// console.log('UPDATE GAMES ACTION', action)
 			return Object.assign({}, state, {openGames: action.games})
 		case 'ENTER_GAME':
-			console.log('ENTER GAME REDUCER', action)
+			// console.log('ENTER GAME REDUCER', action)
 			return Object.assign({}, state, {
 				gameId: action.game.id
-				
 			})
 		case 'START_GAME':
-			console.log('start game reducer', action)
+			// console.log('start game reducer', action)
 			let opponent = null
 			let playerId = 0
 			if (action.game.player1 === state.user.username){
@@ -58,7 +48,6 @@ export default function(state = defaultState, action){
 			}
 			let scope1 = new paper.PaperScope()
 			let scope2 = new paper.PaperScope()
-
 			scope1.name = action.game.player1
 			scope2.name = action.game.player2
 			return Object.assign({}, state, {
@@ -76,16 +65,15 @@ export default function(state = defaultState, action){
 				}
 			})
 		case 'SPECTATE_GAME':
-			console.log('spectate game reducer', action)
+			// console.log('spectate game reducer', action)
 			return Object.assign({}, state, {
 				gameId: action.id,
 				spectator: true
 			})
 		case 'START_SPECTATING':
-			console.log('start spectating reducer', action)
+			// console.log('start spectating reducer', action)
 			let scope11 = new paper.PaperScope()
 			let scope22 = new paper.PaperScope()
-
 			scope11.name = action.game.player1
 			scope22.name = action.game.player2
 			return Object.assign({}, state, {
@@ -99,7 +87,6 @@ export default function(state = defaultState, action){
 					[action.game.player1]:action.game.player1_score,
 					[action.game.player2]:action.game.player2_score,
 				}
-
 			})
 		case 'UPDATE_TIMER_AND_GUESSES':
 			return Object.assign({}, state, {
@@ -110,7 +97,6 @@ export default function(state = defaultState, action){
 		case 'END_GAME':
 			// console.log(action)
 			let newScoreboard = {}
-
 			if (action.winnerName === state.player1){
 				newScoreboard[state.player1] = state.scoreboard[state.player1] + 1
 				newScoreboard[state.player2] = state.scoreboard[state.player2]
@@ -118,12 +104,10 @@ export default function(state = defaultState, action){
 				newScoreboard[state.player1] = state.scoreboard[state.player1]
 				newScoreboard[state.player2] = state.scoreboard[state.player2] + 1
 			}
-
 			return Object.assign({}, state, {
 				gameOver: true,
 				winnerName: action.winnerName,
 				scoreboard: newScoreboard,
-				
 			})
 		case 'PLAY_AGAIN':
 			return Object.assign({}, state, {
@@ -131,17 +115,6 @@ export default function(state = defaultState, action){
 				timer: 0,
 				winnerName: null,
 				goal: action.target
-			})
-		case 'RESET_GAME_PROPS':
-			return Object.assign({}, state, {
-				goal: '',
-				timer: 0,
-				gameOver: false,
-				gameKey: null,
-				winnerName: null,
-				opponent: null,
-				scoreboard: {}
-
 			})
 		default:
 			return state

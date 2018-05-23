@@ -103,7 +103,7 @@ class GameWebSocket extends React.Component {
 
   addPoint(data){
     let scope = null
-    if (data.scope_name == this.props.player1){
+    if (data.scope_name === this.props.player1){
       scope = this.props.scope1
     } else {
       scope = this.props.scope2
@@ -119,7 +119,7 @@ class GameWebSocket extends React.Component {
 
   endPath(data){
     let scope = null
-    if (data.scope_name == this.props.player1){
+    if (data.scope_name === this.props.player1){
       scope = this.props.scope1
     } else {
       scope = this.props.scope2
@@ -129,7 +129,7 @@ class GameWebSocket extends React.Component {
 
   clearCanvas(data){
     let scope = null
-    if (data.scope_name == this.props.player1){
+    if (data.scope_name === this.props.player1){
       scope = this.props.scope1
     } else {
       scope = this.props.scope2

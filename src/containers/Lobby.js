@@ -1,55 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
-import { createGame, joinGame, updateGames, spectateGame, connectSocket } from '../actions/actions'
+import { createGame, joinGame, spectateGame} from '../actions/actions'
 import { ConnectedLobbyWebSocket } from '../components/LobbyWebSocket'
 
 class Lobby extends React.Component {
-	constructor(props){
-		super()
-		// if (!props.user){
-	 //        props.history.push('/login')
-	 //      }
-	 //    props.io.on('open games', data => this.props.updateGames(data))
-		// props.io.on('spectate game', data => this.props.spectateGame(data))
-	}
-		
-
-
-	componentDidMount(){
-		// if (!this.props.user){
-	 //        this.props.history.push('/login')
-	 //      }
-	  }
-		
-		
-	// 	this.props.io.emit('open games')
-	// 	this.interval = setInterval(() => this.props.io.emit('open games'), 3000)
-		
-		
-	// }
-
-	// componentWillUnmount(){
-	// 	this.interval && clearInterval(this.interval)
-	// 	this.props.io.off('open games')
-	// 	this.props.io.off('spectate game')
-	// }
-
-
-
-	// createGame = (e) => {
-	// 	this.props.createGame(this.props.user.username)
-		
-	// 	this.props.history.push("/game")
-	// 	this.props.io.emit('join game', {username: this.props.user.username, gameId:e.target.dataset.id})
-
-	// }
-
-	// spectateGame = (e) => {
-
-	// 	this.props.history.push("/spectate")
-	// 	this.props.io.emit('join game', {username: this.props.user.username, gameId:e.target.dataset.id})
-	// }
 
 	createGame = () => {
 
@@ -70,7 +25,6 @@ class Lobby extends React.Component {
 	}
 
 	render(){
-
 		let openGames = []
 		let spectatorGames = []
 		for(let game of this.props.openGames){
@@ -80,8 +34,6 @@ class Lobby extends React.Component {
 				spectatorGames.push(<button data-id={game.id} onClick={this.spectateGame}>{game.player1} vs {game.player2}</button>)
 			}
 		}
-		
-		
 		return <div className='lobby'>
 				<ConnectedLobbyWebSocket />
 				<h2>Open Games</h2>
@@ -96,25 +48,17 @@ class Lobby extends React.Component {
 }
 
 function mapStateToProps(state){
-	return {io: state.io,
+	return {
 			user: state.user,
 			openGames: state.openGames,
-			testSocket: state.testSocket,
-		 	goal: state.goal,
-		 	timer: state.timer,
-		 	gameId: state.gameId, 
-		 	gameOver: state.gameOver,
-		 	opponent: state.opponent,
-		 	
+		 	gameId: state.gameId
 		 }
 }
 
 function mapDispatchToProps(dispatch){
 	return bindActionCreators({
 		createGame: createGame,
-		updateGames: updateGames,
 		spectateGame: spectateGame,
-		connectSocket: connectSocket,
 		joinGame: joinGame
 	}, dispatch)
 }
