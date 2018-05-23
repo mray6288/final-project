@@ -2,8 +2,14 @@ import React from 'react'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
 import { startGame, startSpectating, updateTimerAndGuesses, endGameState, playAgain, resetGameData } from '../actions/actions'
+import CountdownModal from '../components/CountdownModal'
+
 
 class GameWebSocket extends React.Component {
+
+  state = {
+    modalKey: 0
+  }
 
   componentDidMount() {
       if (!this.props.user){
@@ -24,12 +30,14 @@ class GameWebSocket extends React.Component {
                 // console.log('start game data', data.game)
                 if (data.isPlayer){
                   // console.log('player check', data.game.player1, this.props.user.username)
+                  this.setState({modalKey:this.state.modalKey+1})
                   if (this.isPlayer1){
                     this.vectors = {
                       [data.game.player1]:[[],[],[]],
                       [data.game.player2]:[[],[],[]],
                     }
-                    this.interval = setInterval(this.incrementTimer, 1000)
+                    
+                    setTimeout(this.startInterval, 4000)
                   }
                   this.props.startGame(data.game)
                 } else {
@@ -65,8 +73,10 @@ class GameWebSocket extends React.Component {
               this.endGame(data)
               break
             case 'play_again':
+              this.setState({modalKey:this.state.modalKey+1})
               if (this.isPlayer1){
-                this.interval = setInterval(this.incrementTimer, 1000)
+
+                setTimeout(this.startInterval, 4000)
               }
               this.subscription.perform('clear_canvas', {scope_name: this.props.scope1.name, game_id:this.props.gameId})
               this.subscription.perform('clear_canvas', {scope_name: this.props.scope2.name, game_id:this.props.gameId})
@@ -83,6 +93,10 @@ class GameWebSocket extends React.Component {
     this.vectors[data.scope_name][0].push(data.point.x)
     this.vectors[data.scope_name][1].push(data.point.y)
     this.vectors[data.scope_name][2].push(data.time)
+  }
+
+  startInterval = () => {
+    this.interval = setInterval(this.incrementTimer, 1000)
   }
 
   incrementTimer = () => {
@@ -164,7 +178,7 @@ class GameWebSocket extends React.Component {
 
   render() {
       return(
-        <div />
+        <CountdownModal modalKey={this.state.modalKey}/>
       )
     }
 }

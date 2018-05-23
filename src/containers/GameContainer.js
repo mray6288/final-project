@@ -6,7 +6,6 @@ import { bindActionCreators } from 'redux'
 import { ConnectedScoreboard } from '../components/Scoreboard'
 import { ConnectedGameWebSocket } from '../components/GameWebSocket'
 
-
 class GameContainer extends React.Component {
 	constructor(props){
 		super()
@@ -14,7 +13,7 @@ class GameContainer extends React.Component {
 	        props.history.push('/lobby')
 	      }
 		this.state = {
-			willRematch: false
+			willRematch: false,
 		}
 	}
 	
@@ -28,16 +27,19 @@ class GameContainer extends React.Component {
 
 	componentWillUpdate(){
 		if(this.props.timer === 0 && this.state.willRematch){
+			// console.log('modal open here?')
 			this.setState({
-				willRematch: false
+				willRematch: false,
 			})
 		}
+
 	}
 
 	playAgain = (e) => {
 		this.channel.perform('play_again', {game_id:this.props.gameId})
 		this.setState({
-			willRematch: true
+			willRematch: true,
+			countdownDown: false
 		})		
 	}
 
@@ -60,6 +62,7 @@ class GameContainer extends React.Component {
 		let game = (
 				<div className='game-container'> 
 				<ConnectedScoreboard />
+				
 				<h1>Draw a {this.props.goal}</h1>
 	        	{this.props.gameOver ? (this.state.willRematch || this.props.spectator ? 'Waiting for next game' : <button onClick={this.playAgain}>Play Again</button>) : <h1>Timer: {this.props.timer}</h1>}
 
@@ -69,6 +72,7 @@ class GameContainer extends React.Component {
 		return (
 				<div>
 				<ConnectedGameWebSocket />
+				
 				{this.props.player2 ? game : 'Waiting for player 2'}
 				</div>
 			)
