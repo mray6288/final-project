@@ -67,9 +67,9 @@ class GameWebSocket extends React.Component {
             case 'play_again':
               if (this.isPlayer1){
                 this.interval = setInterval(this.incrementTimer, 1000)
-                this.subscription.perform('clear_canvas', {scope_name: this.props.scope1.name, game_id:this.props.gameId})
-                this.subscription.perform('clear_canvas', {scope_name: this.props.scope2.name, game_id:this.props.gameId})
               }
+              this.subscription.perform('clear_canvas', {scope_name: this.props.scope1.name, game_id:this.props.gameId})
+              this.subscription.perform('clear_canvas', {scope_name: this.props.scope2.name, game_id:this.props.gameId})
               this.props.playAgain(data.data.target)
               break
             default:

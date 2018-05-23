@@ -81,7 +81,7 @@ class Canvas extends React.Component {
 		<br/>
 		<canvas id={`canvas-${this.props.scope.name}`} className={this.isWinner() ? 'winning-drawing' : (this.isMine ? 'my-drawing' : 'opponent-drawing')} height='370px' width='670px' resize></canvas>
 		<h3>{this.props.scope.name}</h3>
-		{this.isMine ? <button onClick={this.emitClearCanvas}>Clear Canvas</button> : ''}
+		{this.isMine && !this.props.gameOver ? <button onClick={this.emitClearCanvas}>Clear Canvas</button> : ''}
 		</div>
 	}
 }

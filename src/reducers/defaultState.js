@@ -14,6 +14,6 @@ export const defaultState = {
 	openGames: [],
 	testSocket: [],
 	spectator: false,
-	guess1: null,
-	guess2: null
+	guess1: '',
+	guess2: ''
 }
