@@ -34,9 +34,10 @@ class App extends Component {
       <div className="App">
       <header>
         <nav>
-          <Link to='/lobby'>Lobby</Link>
+          
           {this.props.user ? 
             <div>
+            <Link to='/lobby'>Lobby</Link>
             <button onClick={() => {
               this.props.logout()
               this.props.history.push('/login')
