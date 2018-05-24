@@ -18,7 +18,8 @@ class App extends Component {
 
   componentDidMount(){
     // console.log('app did mount', this.props)
-    if (localStorage.getItem("token")){
+    let x = localStorage.getItem('token')
+    if (x && x !== 'undefined'){      
       this.props.getUser()
       .then(() => {
         this.props.history.push('/lobby')

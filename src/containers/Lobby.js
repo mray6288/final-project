@@ -26,21 +26,44 @@ class Lobby extends React.Component {
 
 	render(){
 		let openGames = []
+		let openFriends = []
 		let spectatorGames = []
+		let spectatorFriends = []
+		let friends = []
+		// console.log('render lobby props', this.props)
+		this.props.user ? friends = this.props.user.friends.map(friend => friend.username) : null
+		let button = null
+		console.log('friends', friends)
 		for(let game of this.props.openGames){
 			if (!game.player2){
-				openGames.push(<button data-id={game.id} onClick={this.joinGame}>vs {game.player1}</button>)
+				button = <button data-id={game.id} onClick={this.joinGame}>vs {game.player1}</button>
+				if (friends.includes(game.player1)){
+					openFriends.push(button)
+				} else{
+					openGames.push(button)
+				}
 			} else {
-				spectatorGames.push(<button data-id={game.id} onClick={this.spectateGame}>{game.player1} vs {game.player2}</button>)
+				button = <button data-id={game.id} onClick={this.spectateGame}>{game.player1} vs {game.player2}</button>
+				if (friends.includes(game.player1) || friends.includes(game.player2)){
+					spectatorFriends.push(button)
+				} else {
+					spectatorGames.push(button)
+				}
 			}
 		}
 		return <div className='lobby'>
 				<ConnectedLobbyWebSocket />
 				<h2>Open Games</h2>
-				{openGames}<br/>
-				<button onClick={this.createGame}>NEW GAME</button>
+				{openFriends.length > 0 ? <h3>with friends</h3> : ''}
+				{openFriends}<br/>
+				{openGames.length > 0 ? <h3>all games</h3> : ''}
+				{openGames}<br/><br/>
+				<button onClick={this.createGame}>START NEW GAME</button>
 				<h2>Spectate Games</h2>
-				{spectatorGames}
+				{spectatorFriends.length > 0 ? <h3>with friends</h3> : ''}
+				{spectatorFriends}<br/>
+				{spectatorGames.length > 0 ? <h3>all games</h3> : ''}
+				{spectatorGames}<br/>
 				
 				</div>
 	}
