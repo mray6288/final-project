@@ -74,6 +74,13 @@ export function connectSocket(){
 	}
 }
 
+export function addFriend(username){
+	return {
+		type: 'ADD_FRIEND',
+		username
+	}
+}
+
 export function createGame(user){
 	return (dispatch) => {
 		return fetch(API_URL + "/games", {

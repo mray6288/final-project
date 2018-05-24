@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
+import { addFriend } from '../actions/actions'
 
 class Canvas extends React.Component {
 	constructor(props){
@@ -69,6 +70,14 @@ class Canvas extends React.Component {
 		this.channel.perform('clear_canvas', {scope_name: this.props.scope.name, game_id:this.props.gameId})
 	}
 
+	isFriend() {
+		if (this.isMine || this.props.user.friends.find(friend => friend.username === this.props.scope.name)){
+			return true
+		} else {
+			return false
+		}
+	}
+
 	isWinner() {
 		return this.props.winnerName === this.props.scope.name
 	}
@@ -80,7 +89,7 @@ class Canvas extends React.Component {
 		<h2>AI Guess: {this.props.scope.name === this.props.player1 ? this.props.guess1 : this.props.guess2}</h2>
 		<br/>
 		<canvas id={`canvas-${this.props.scope.name}`} className={this.isWinner() ? 'winning-drawing' : (this.isMine ? 'my-drawing' : 'opponent-drawing')} height='370px' width='670px' resize></canvas>
-		<h3>{this.props.scope.name}</h3>
+		<h3>{this.props.scope.name}{!this.isFriend() ? <button onClick={() => this.props.addFriend(this.props.scope.name)}>Add Friend</button>: ''}</h3>
 		{this.isMine && !this.props.gameOver ? <button onClick={this.emitClearCanvas}>Clear Canvas</button> : ''}
 		</div>
 	}
@@ -102,6 +111,7 @@ function mapStateToProps(state){
 
 function mapDispatchToProps(dispatch){
 	return bindActionCreators({
+		addFriend: addFriend
 	}, dispatch)
 }
 
