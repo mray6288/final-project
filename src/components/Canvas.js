@@ -7,7 +7,7 @@ class Canvas extends React.Component {
 	constructor(props){
 		super()
 		this.state = {
-	
+			isFriend: false
 		}
 		this.tool = null
 		this.path = null
@@ -20,6 +20,7 @@ class Canvas extends React.Component {
 		// console.log('canvas did mount', this.props)
 		this.setupCanvas()
 		this.channel = this.props.io.subscriptions.subscriptions[0]		
+		this.isFriend() && this.setState({isFriend: true})
 	}
 
 	componentDidUpdate(prevProps){
@@ -78,6 +79,11 @@ class Canvas extends React.Component {
 		}
 	}
 
+	addFriend = () => {
+		this.setState({isFriend: true})
+		this.props.addFriend({user: this.props.user, friend: this.props.scope.name, scoreboard: this.props.scoreboard})
+	}
+
 	isWinner() {
 		return this.props.winnerName === this.props.scope.name
 	}
@@ -89,7 +95,7 @@ class Canvas extends React.Component {
 		<h2>AI Guess: {this.props.scope.name === this.props.player1 ? this.props.guess1 : this.props.guess2}</h2>
 		<br/>
 		<canvas id={`canvas-${this.props.scope.name}`} className={this.isWinner() ? 'winning-drawing' : (this.isMine ? 'my-drawing' : 'opponent-drawing')} height='370px' width='670px' resize></canvas>
-		<h3>{this.props.scope.name}{!this.isFriend() ? <button onClick={() => this.props.addFriend(this.props.scope.name)}>Add Friend</button>: ''}</h3>
+		<h3>{this.props.scope.name}{!this.state.isFriend ? <button onClick={this.addFriend}>Add Friend</button>: ''}</h3>
 		{this.isMine && !this.props.gameOver ? <button onClick={this.emitClearCanvas}>Clear Canvas</button> : ''}
 		</div>
 	}
@@ -105,7 +111,8 @@ function mapStateToProps(state){
 		 	player2: state.player2,
 		 	gameId: state.gameId,
 		 	guess1: state.guess1,
-		 	guess2: state.guess2
+		 	guess2: state.guess2,
+		 	scoreboard: state.scoreboard
 		 }
 }
 

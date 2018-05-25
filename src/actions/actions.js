@@ -74,10 +74,13 @@ export function connectSocket(){
 	}
 }
 
-export function addFriend(username){
-	return {
-		type: 'ADD_FRIEND',
-		username
+export function addFriend(data){
+	return () => {
+		fetch(API_URL + "/friendships", {
+			method: "POST",
+			headers: headers,
+			body: JSON.stringify(data)
+		})
 	}
 }
 

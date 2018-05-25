@@ -33,7 +33,7 @@ class Lobby extends React.Component {
 		// console.log('render lobby props', this.props)
 		this.props.user ? friends = this.props.user.friends.map(friend => friend.username) : null
 		let button = null
-		console.log('friends', friends)
+		// console.log('friends', friends)
 		for(let game of this.props.openGames){
 			if (!game.player2){
 				button = <button data-id={game.id} onClick={this.joinGame}>vs {game.player1}</button>

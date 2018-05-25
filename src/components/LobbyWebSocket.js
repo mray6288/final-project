@@ -7,7 +7,7 @@ class LobbyWebSocket extends React.Component {
   componentDidMount() {
       this.subscription = this.props.io.subscriptions.create({channel: "LobbyChannel"}, {
         received: (games) => {
-          console.log('games', games)
+          // console.log('games', games)
           this.props.updateGames(games)
         }
       })
