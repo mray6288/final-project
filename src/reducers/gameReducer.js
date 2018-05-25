@@ -7,6 +7,7 @@ const webSocketURL = 'wss://ray-final-project-backend.herokuapp.com/cable'
 // const webSocketURL = 'http://localhost:3000/cable'
 
 
+
 export default function(state = defaultState, action){
 	switch(action.type){
 		case 'LOGIN':
