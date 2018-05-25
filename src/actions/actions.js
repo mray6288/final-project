@@ -1,6 +1,6 @@
-const API_URL = "https://ray-final-project-backend.herokuapp.com/api/v1"
+// const API_URL = "https://ray-final-project-backend.herokuapp.com/api/v1"
 // const API_URL = 'https://2eaa314f.ngrok.io'
-// const API_URL = "http://localhost:3000/api/v1"
+const API_URL = "http://localhost:3000/api/v1"
 const headers = { 
 	"Content-Type": "application/json"
 }
@@ -58,6 +58,12 @@ export function endGameState(winnerName){
 	return {
 		type: 'END_GAME',
 		winnerName
+	}
+}
+
+export function timeUp(){
+	return {
+		type: 'TIME_UP',
 	}
 }
 

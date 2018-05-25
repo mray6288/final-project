@@ -13,7 +13,7 @@ class Canvas extends React.Component {
 		this.path = null
 		this.time_0 = 0
 		this.isMine = props.scope.name === props.user.username
-		
+		this.throttle = 1
 	}
 
 	componentDidMount(){
@@ -36,6 +36,12 @@ class Canvas extends React.Component {
 	}
 
 	emitDrawing(event){
+		if (this.throttle !== 3){
+			this.throttle += 1
+			return null
+		} else {
+			this.throttle = 1
+		}
 		if (this.props.gameOver || this.props.goal === 'waiting for opponent'){
 			return null
 		}
@@ -60,7 +66,7 @@ class Canvas extends React.Component {
 		if (this.isMine){
 			this.tool = new this.props.scope.Tool()
 			this.time_0 = Date.now()
-			this.tool.onMouseDown = null
+			this.tool.onMouseDown = this.emitEndPath.bind(this)
 			this.tool.onMouseDrag = this.emitDrawing.bind(this)
 			this.tool.onMouseUp = this.emitEndPath.bind(this)
 		}

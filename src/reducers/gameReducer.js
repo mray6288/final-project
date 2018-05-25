@@ -2,9 +2,9 @@ import {defaultState} from './defaultState'
 import actionCable from 'actioncable'
 import paper from '../../node_modules/paper/dist/paper-core.js'
 
-const webSocketURL = 'wss://ray-final-project-backend.herokuapp.com/cable'
+// const webSocketURL = 'wss://ray-final-project-backend.herokuapp.com/cable'
 // const webSocketURL = 'wss://2eaa314f.ngrok.io'
-// const webSocketURL = 'http://localhost:3000/cable'
+const webSocketURL = 'http://localhost:3000/cable'
 
 
 
@@ -109,6 +109,10 @@ export default function(state = defaultState, action){
 				gameOver: true,
 				winnerName: action.winnerName,
 				scoreboard: newScoreboard,
+			})
+		case 'TIME_UP':
+			return Object.assign({}, state, {
+				gameOver: true,
 			})
 		case 'PLAY_AGAIN':
 			return Object.assign({}, state, {

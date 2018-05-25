@@ -35,7 +35,7 @@ export default class CountdownModal extends React.Component {
   // }
 
   componentWillReceiveProps(prevProps){
-    if(prevProps.modalKey != this.props.modalKey){
+    if(prevProps.modalKey !== this.props.modalKey){
       this.initiateCountdown()
     }
   }

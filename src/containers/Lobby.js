@@ -54,16 +54,23 @@ class Lobby extends React.Component {
 		return <div className='lobby'>
 				<ConnectedLobbyWebSocket />
 				<h2>Open Games</h2>
-				{openFriends.length > 0 ? <h3>with friends</h3> : ''}
-				{openFriends}<br/>
-				{openGames.length > 0 ? <h3>all games</h3> : ''}
-				{openGames}<br/><br/>
+				<h3>with friends</h3>
+				{openFriends.length > 0 ? '' : 'No friends playing!'}
+				{openFriends}
+				<br/>
+				<h3>all games</h3>
+				{openGames.length > 0 ? '' : 'No open games - start a new one!'}
+				{openGames}
+				<br/><br/>
 				<button onClick={this.createGame}>START NEW GAME</button>
 				<h2>Spectate Games</h2>
-				{spectatorFriends.length > 0 ? <h3>with friends</h3> : ''}
+				<h3>with friends</h3>
+				{spectatorFriends.length > 0 ? '' : 'No friends playing!'}
 				{spectatorFriends}<br/>
-				{spectatorGames.length > 0 ? <h3>all games</h3> : ''}
-				{spectatorGames}<br/>
+				<h3>all games</h3>
+				{spectatorGames.length > 0 ? '' : 'No games to spectate!'}
+				{spectatorGames}
+				<br/>
 				
 				</div>
 	}

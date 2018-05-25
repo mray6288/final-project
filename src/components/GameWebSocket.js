@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
-import { startGame, startSpectating, updateTimerAndGuesses, endGameState, playAgain, resetGameData } from '../actions/actions'
+import { startGame, startSpectating, updateTimerAndGuesses, endGameState, timeUp, playAgain, resetGameData } from '../actions/actions'
 import CountdownModal from '../components/CountdownModal'
 
 
@@ -18,12 +18,13 @@ class GameWebSocket extends React.Component {
       window.onbeforeunload = () => {
         this.leaveGame()
       }
+      // this.counter = 0
       // console.log('game web socket did mount', this.props)
       this.subscription = this.props.io.subscriptions.create({channel: "GameChannel", id: this.props.gameId, username: this.props.user.username}, {
         received: (data) => {
-          // console.log('received data', data.type)
+          // console.log('received data', data)
           switch (data.type){
-            case 'new subscriber':
+            case 'new_subscriber':
               this.isPlayer1 = data.game.player1 === this.props.user.username
               // console.log('is player1?', this.isPlayer1)
               if(data.game.player2){
@@ -55,6 +56,8 @@ class GameWebSocket extends React.Component {
               }
               break
             case 'drawing':
+            // this.counter++
+            // console.log('drawing emits: ', this.counter)
               if (this.isPlayer1){
                 this.updateVectors(data.data)
               }
@@ -82,6 +85,8 @@ class GameWebSocket extends React.Component {
               this.subscription.perform('clear_canvas', {scope_name: this.props.scope2.name, game_id:this.props.gameId})
               this.props.playAgain(data.data.target)
               break
+            case 'time_up':
+              this.timeUp()
             default:
               console.log('message type unknown', data)
           }
@@ -103,12 +108,22 @@ class GameWebSocket extends React.Component {
     this.subscription.perform('increment_timer', {game_id:this.props.gameId, vectors:this.vectors})
   }
 
+  timeUp = () => {
+    if (this.interval){
+      // console.log('clearing interval')
+      clearInterval(this.interval)
+    }
+    for(let v in this.vectors){
+      this.vectors[v] = [[],[],[]]
+    }
+    this.props.timeUp()
+  }
+
   endGame = (data) => {
     if (this.interval){
       // console.log('clearing interval')
       clearInterval(this.interval)
     }
-    if (this.isPlayer1)
     for(let v in this.vectors){
       this.vectors[v] = [[],[],[]]
     }
@@ -116,6 +131,9 @@ class GameWebSocket extends React.Component {
   }
 
   addPoint(data){
+    if (!this.props.scope2){
+      return null
+    }
     let scope = null
     if (data.scope_name === this.props.player1){
       scope = this.props.scope1
@@ -138,7 +156,9 @@ class GameWebSocket extends React.Component {
     } else {
       scope = this.props.scope2
     }
-    scope.path = null
+    if (scope.path){
+      scope.path = null
+    }
   }
 
   clearCanvas(data){
@@ -202,7 +222,8 @@ function mapDispatchToProps(dispatch){
     updateTimerAndGuesses: updateTimerAndGuesses,
     endGameState: endGameState,
     playAgain: playAgain,
-    resetGameData: resetGameData
+    resetGameData: resetGameData,
+    timeUp: timeUp
   }, dispatch)
 }
 
