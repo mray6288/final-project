@@ -100,7 +100,7 @@ class Canvas extends React.Component {
 		<h2 className='winner'>{this.isWinner() ? `${this.props.scope.name} WINS!` : <br/>}</h2>
 		<h2>AI Guess: {this.props.scope.name === this.props.player1 ? this.props.guess1 : this.props.guess2}</h2>
 		<br/>
-		<canvas id={`canvas-${this.props.scope.name}`} className={this.isWinner() ? 'winning-drawing' : (this.isMine ? 'my-drawing' : 'opponent-drawing')} resize></canvas>
+		<canvas id={`canvas-${this.props.scope.name}`} className={this.isWinner() ? 'winning-drawing' : (this.isMine ? 'my-drawing' : 'opponent-drawing')}></canvas>
 		<h3>{this.props.scope.name}</h3>
 		{!this.state.isFriend ? <button className='btn' onClick={this.addFriend}>Add Friend</button>: ''}
 		{this.isMine && !this.props.gameOver ? <button className='btn' onClick={this.emitClearCanvas}>Clear Canvas</button> : ''}
