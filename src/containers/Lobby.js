@@ -4,7 +4,19 @@ import { bindActionCreators } from 'redux'
 import { createGame, joinGame, spectateGame} from '../actions/actions'
 import { ConnectedLobbyWebSocket } from '../components/LobbyWebSocket'
 
+function zoomOutMobile() {
+  var viewport = document.querySelector('meta[name="viewport"]');
+
+  if ( viewport ) {
+    viewport.content = "initial-scale=1";
+  }
+}
+
 class Lobby extends React.Component {
+
+	componentDidMount() {
+		zoomOutMobile()
+	}
 
 	createGame = () => {
 
