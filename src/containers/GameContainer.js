@@ -12,7 +12,7 @@ function zoomOutMobile() {
 
   if ( viewport ) {
     viewport.content = "initial-scale=0.1";
-    viewport.content = "width=1200";
+    viewport.content = "width=700";
   }
 }
 
