@@ -165,6 +165,9 @@ class GameWebSocket extends React.Component {
   }
 
   clearCanvas(data){
+    if (!this.props.scope2){
+      return null
+    }
     let scope = null
     if (data.scope_name === this.props.player1){
       scope = this.props.scope1
