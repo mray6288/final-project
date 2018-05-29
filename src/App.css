@@ -117,6 +117,7 @@ nav {
 
 .canvas-object {
   margin-top: -60px;
+  margin-bottom: 60px;
   float: left;
   min-width: 700px;
   width: 50%;
