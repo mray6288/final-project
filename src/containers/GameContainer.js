@@ -7,6 +7,15 @@ import { ConnectedScoreboard } from '../components/Scoreboard'
 import { ConnectedGameWebSocket } from '../components/GameWebSocket'
 import { Link } from 'react-router-dom'
 
+function zoomOutMobile() {
+  var viewport = document.querySelector('meta[name="viewport"]');
+
+  if ( viewport ) {
+    viewport.content = "initial-scale=0.1";
+    viewport.content = "width=1200";
+  }
+}
+
 class GameContainer extends React.Component {
 	constructor(props){
 		super()
@@ -24,6 +33,7 @@ class GameContainer extends React.Component {
 	      }
 		// console.log('game container did mount', this.props)
 		this.channel = this.props.io.subscriptions.subscriptions[0]
+		zoomOutMobile()
 	}
 
 	componentWillUpdate(){
