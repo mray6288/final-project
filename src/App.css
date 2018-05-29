@@ -1,3 +1,97 @@
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+a {
+  color: #EAC67A;
+  text-decoration: none
+}
+
+a:hover {
+  color: white;
+}
+
+body {
+  background-color: #18121E;
+
+  color: white;
+  font-family: Palatino;
+}
+
+button {
+  background: #d9aa34;
+  background-image: -webkit-linear-gradient(top, #d9aa34, #28222E);
+  background-image: -moz-linear-gradient(top, #d9aa34, #28222E);
+  background-image: -ms-linear-gradient(top, #d9aa34, #28222E);
+  background-image: -o-linear-gradient(top, #d9aa34, #28222E);
+  background-image: linear-gradient(to bottom, #d9aa34, #28222E);
+  -webkit-border-radius: 28;
+  -moz-border-radius: 28;
+  border-radius: 28px;
+  font-family: Arial;
+  color: #ffffff;
+  font-size: 15px;
+  padding: 10px 20px 10px 20px;
+  margin: 10px;
+  text-decoration: none;
+  border: 0px solid transparent;
+}
+
+button:hover {
+  background: #f0b11d;
+  background-image: -webkit-linear-gradient(top, #f0b11d, #38323E);
+  background-image: -moz-linear-gradient(top, #f0b11d, #38323E);
+  background-image: -ms-linear-gradient(top, #f0b11d, #38323E);
+  background-image: -o-linear-gradient(top, #f0b11d, #38323E);
+  background-image: linear-gradient(to bottom, #f0b11d, #38323E);
+  text-decoration: none;
+}
+
+canvas {
+  border: 2px solid black;
+  background-color: white;
+}
+
+header {
+  background-color: #AF4B24;
+}
+
+nav {
+  background-color: #AF4B24;
+  margin-bottom: 10px;
+  margin-top: -25px;
+  height: 70px;
+
+}
+
+#root {
+  background-color: #18121E;
+}
+
+.nav-lobby {
+  float: left;
+  width: 70px;
+  padding: 20px;
+  margin-left: 60px;
+  margin-top: 0px;
+  font-size: 25px;
+}
+
+.nav-logout {
+  position: static;
+  margin-top: -85px;
+  margin-right: 60px;
+  z-index: 6;
+  float: right;
+}
+
+.nav-title {
+  margin-right: 130px;
+  font-size: 3em;
+  padding-top: 10px;
+}
+
 .App {
   text-align: center;
 }
@@ -8,11 +102,7 @@
 }
 
 .App-header {
-  background-color: #222;
-  height: 25px;
-  padding-bottom: 20px;
-  padding-top: 10px;
-  color: white;
+
 }
 
 .App-title {
@@ -23,51 +113,84 @@
   font-size: large;
 }
 
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+
+
+.canvas-object {
+  margin-top: -60px;
+  float: left;
+  min-width: 700px;
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-canvas {
-  border: 2px solid black;
+.goal {
+  font-size: 48px;
+  margin: 0px;
+}
+
+.lobby-divs {
+  background-color: #233237;
+  color: white;
+  border-radius: 20px;
+  margin: 1%;
+  padding: 5px;
+}
+
+.lobby-container {
 
 }
 
 .my-drawing {
   cursor: url('http://cursors2.totallyfreecursors.com/thumbnails/pencil.gif'), auto;
   padding: 8px;
-  border: 4px solid orange;
+  border: 5px solid #AF4B24;
 }
 
-.canvas-object {
+/* yellow #EAC67A
+   red #AF4B24
+   gunmetal #233237
+   navy blue #18121E
+   */
+
+.open-games-container {
+  width: 47%;
   float: left;
-  width: 50%;
-  margin-left: auto;
-  margin-right: auto;
+  min-height: 500px;
+  min-width:300px;
+}
+
+
+
+.opponent-drawing {
+  padding: 10px;
+}
+
+.scoreboard-container {
+
+  position: absolute;
+  z-index: 5;
+  margin-top: 10px;
+  margin-left: 20px;
+}
+
+.scoreboard {
+  position: absolute;
+  border: 3px dashed #AF4B24;
+  background-color: white;
+  color: black;
+  min-width: 195px;
+}
+.start-game {
+  width: 98%;
+
 }
 
 .winner {
   color: green;
 }
 
-.opponent-drawing {
-  padding: 10px;
-}
-
 .winning-drawing {
   padding: 2px;
   border: 10px solid green;
-}
-
-.scoreboard-container {
-  position: absolute;
-  z-index: 5;
-  margin-top: -50px;
-  margin-left: 20px;
-}
-
-.scoreboard {
-  position: absolute;
-  border: 6px solid black;
-  min-width: 125px;
 }

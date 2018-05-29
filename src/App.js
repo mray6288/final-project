@@ -9,7 +9,6 @@ import Login from './components/Login'
 import Signup from './components/Signup'
 import {Route, withRouter, Switch, Link} from 'react-router-dom'
 
-
 class App extends Component {
   constructor(props){
     super()
@@ -34,21 +33,25 @@ class App extends Component {
     return (
       <div className="App">
       <header>
-        <nav>
-          
+        
+          <nav>
           {this.props.user ? 
             <div>
-            <Link to='/lobby'>Lobby</Link>
-            <button onClick={() => {
-              this.props.logout()
-              this.props.history.push('/login')
-            }}>Logout</button>
-            Logged in as {this.props.user.username}
+              <Link class='nav-lobby' to="/lobby">Lobby</Link>
+              <h1 class='nav-title'>Doodle Duel</h1>
+              <div class='nav-logout'>
+              <Link onClick={() => this.props.logout()} to='/login'>
+                Logout
+              </Link><br/>
+              Logged in as {this.props.user.username}
+              </div>
             </div>
+            
             : ''}
-
-        </nav>
+            </nav>
+        
       </header>
+      <div className='lobby-container'>
       <Switch>
         <Route path='/login' component={Login} />
         <Route path='/signup' component={Signup}/>
@@ -56,6 +59,7 @@ class App extends Component {
         <Route path='/game/:id' component={ConnectedGameContainer}/>
         <Route component={ConnectedLobby}/>
       </Switch>
+      </div>
       </div>
     )
   }

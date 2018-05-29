@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { signup } from '../actions/actions'
+import {Link} from 'react-router-dom'
 
 class Signup extends React.Component{
 
@@ -39,6 +40,8 @@ class Signup extends React.Component{
 				Confirm Password: <input type="password" name="passwordConfirmation" value={this.state.passwordConfirmation} onChange={this.handleChange}/><br/>
 				<input type='submit' value='Register'/>
 			</form>
+			<br/>
+			<Link to='/login' >Or Login Here</Link>
 			</div>
 		)
 	}

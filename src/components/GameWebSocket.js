@@ -165,9 +165,9 @@ class GameWebSocket extends React.Component {
   }
 
   clearCanvas(data){
-    if (!this.props.scope2){
-      return null
-    }
+    // if (!this.props.scope2){
+    //   return null
+    // }
     let scope = null
     if (data.scope_name === this.props.player1){
       scope = this.props.scope1
@@ -186,6 +186,7 @@ class GameWebSocket extends React.Component {
   }
 
   leaveGame(){
+    // console.log('LEAVE GAME FUNCTION')
     this.props.resetGameData()
     if (!this.props.spectator){
       this.subscription.perform('leave_channel', {game_id:this.props.gameId, username:this.props.user.username})

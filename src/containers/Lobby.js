@@ -51,28 +51,39 @@ class Lobby extends React.Component {
 				}
 			}
 		}
-		return <div className='lobby'>
+		return (
+			<div className='lobby'>
 				<ConnectedLobbyWebSocket />
+				<div className='start-game lobby-divs'>
+				<p> Compete to see whose picture is guessed correctly by the Doodle AI first!</p>
+				<button onClick={this.createGame}>START NEW GAME</button>
+				</div>
+				<div className='open-games-container lobby-divs'>
 				<h2>Open Games</h2>
+				<br/>
 				<h3>with friends</h3>
 				{openFriends.length > 0 ? '' : 'No friends playing!'}
 				{openFriends}
-				<br/>
+				<br/><br/><br/>
 				<h3>all games</h3>
 				{openGames.length > 0 ? '' : 'No open games - start a new one!'}
 				{openGames}
-				<br/><br/>
-				<button onClick={this.createGame}>START NEW GAME</button>
+				</div>
+				<div className='open-games-container lobby-divs'>
+				
 				<h2>Spectate Games</h2>
+				<br/>
 				<h3>with friends</h3>
 				{spectatorFriends.length > 0 ? '' : 'No friends playing!'}
-				{spectatorFriends}<br/>
+				{spectatorFriends}
+				<br/><br/><br/>
 				<h3>all games</h3>
 				{spectatorGames.length > 0 ? '' : 'No games to spectate!'}
 				{spectatorGames}
-				<br/>
-				
 				</div>
+				
+			</div>
+			)
 	}
 
 }

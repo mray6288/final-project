@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux'
 // import { } from '../actions/actions'
 import { ConnectedScoreboard } from '../components/Scoreboard'
 import { ConnectedGameWebSocket } from '../components/GameWebSocket'
+import { Link } from 'react-router-dom'
 
 class GameContainer extends React.Component {
 	constructor(props){
@@ -48,12 +49,12 @@ class GameContainer extends React.Component {
 		
 		let canvases = null
         if (this.props.user.username === this.props.player1){
-        	canvases = <div><ConnectedCanvas scope={this.props.scope1} endGame={this.endGame} />
+        	canvases = <div ><ConnectedCanvas scope={this.props.scope1} endGame={this.endGame} />
 				<ConnectedCanvas scope={this.props.scope2} endGame={this.endGame} />
 				</div>
         } else {
 
-        	canvases = <div><ConnectedCanvas scope={this.props.scope2} endGame={this.endGame} />
+        	canvases = <div ><ConnectedCanvas scope={this.props.scope2} endGame={this.endGame} />
 				<ConnectedCanvas scope={this.props.scope1} endGame={this.endGame} />
 				</div>
         }
@@ -62,10 +63,11 @@ class GameContainer extends React.Component {
 		let game = (
 				<div className='game-container'> 
 				<ConnectedScoreboard />
-				
-				<h1>Draw a {this.props.goal}</h1>
-	        	{this.props.gameOver ? (this.state.willRematch || this.props.spectator ? 'Waiting for next game' : <button onClick={this.playAgain}>Play Again</button>) : <h1>Timer: {this.props.timer}</h1>}
-	        	<br/>
+				<div>
+				<h3>Can You Draw It?</h3>
+				<p className='goal'>{this.props.goal}</p>
+	        	{this.props.gameOver ? (this.state.willRematch || this.props.spectator ? <div>Waiting for next game<br/><Link to='/lobby'>Back To Lobby</Link></div> : <button onClick={this.playAgain}>Play Again</button>) : <h2>Timer: {this.props.timer}</h2>}
+	        	</div>
 	        	{this.props.timer >= 85 ? (this.props.timer >= 100 ? 'You ran out of time!' : 'Time limit is 100 seconds!') : <br/>}
 	        	{canvases}
 	        	</div>

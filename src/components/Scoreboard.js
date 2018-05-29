@@ -12,8 +12,9 @@ class Scoreboard extends React.Component {
 		
 		return (
 			<div className='scoreboard-container'>
-			<h3> SCOREBOARD </h3>
+			
 			<div className='scoreboard'>
+			<h5> SCOREBOARD </h5>
 			{scoreboard}
 			</div>
 			</div>
