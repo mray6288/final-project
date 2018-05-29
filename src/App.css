@@ -92,12 +92,7 @@ nav {
   padding-top: 10px;
 }
 
-@media only screen and (max-device-width: 480px) {
-  /* define mobile specific styles come here */
-  .nav-title { 
-    font-size: .5em; 
-  }
-}
+
 
 .App {
   text-align: center;
@@ -201,4 +196,38 @@ nav {
 .winning-drawing {
   padding: 2px;
   border: 10px solid green;
+}
+
+@media only screen and (max-device-width: 480px) {
+  /* define mobile specific styles come here */
+  .nav-title { 
+    font-size: 1.2em; 
+    margin-right: 90px;
+    padding: 20px;
+  }
+
+  .nav-lobby {
+    float: left;
+    width: 70px;
+    padding: 20px;
+    margin-left: 0px;
+    margin-top: 10px;
+    font-size: 18px;
+  }
+
+  .nav-logout {
+    position: static;
+    margin-top: -60px;
+    margin-right: 2px;
+    font-size: 14px;
+    z-index: 6;
+    float: right;
+  }
+
+  .open-games-container {
+    width: 96%;
+    float: left;
+    min-height: 500px;
+    min-width:300px;
+  }
 }
