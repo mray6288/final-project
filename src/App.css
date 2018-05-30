@@ -147,7 +147,7 @@ nav {
 }
 
 .my-drawing {
-  cursor: url('http://cursors2.totallyfreecursors.com/thumbnails/pencil.gif'), auto;
+  cursor: url('./pencil.png'), auto;
   padding: 8px;
   border: 5px solid #AF4B24;
 }
