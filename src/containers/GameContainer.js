@@ -76,9 +76,9 @@ class GameContainer extends React.Component {
 				<div>
 				<h3>Can You Draw It?</h3>
 				<p className='goal'>{this.props.goal}</p>
-	        	{this.props.gameOver ? (this.state.willRematch || this.props.spectator ? <div><h3>Waiting for next game</h3><Link to='/lobby'>Back To Lobby</Link></div> : <button onClick={this.playAgain}>Play Again</button>) : <h2>Timer: {this.props.timer}</h2>}
+	        	{this.props.gameOver ? (this.state.willRematch || this.props.spectator ? <div><h3>Waiting for next game</h3><Link to='/lobby'>Back To Lobby</Link></div> : <div><br/><button onClick={this.playAgain}>Play Again</button></div>) : <h2>Timer: {this.props.timer}</h2>}
 	        	</div>
-	        	{this.props.timer >= 85 ? (this.props.timer >= 100 ? 'You ran out of time!' : 'Time limit is 100 seconds!') : <br/>}
+	        	{this.props.timer >= 50 ? (this.props.timer >= 60 ? 'You ran out of time!' : 'Time limit is 60 seconds!') : <br/>}
 	        	{canvases}
 	        	</div>
 			)
