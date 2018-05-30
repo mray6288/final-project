@@ -108,7 +108,7 @@ export function createGame(user){
 }
 
 export function joinGame(user, gameId){
-	console.log('join game', user, gameId)
+	// console.log('join game', user, gameId)
 	return (dispatch) => {
 		return fetch(API_URL + `/games/${gameId}`, {
 			method: "PATCH",
