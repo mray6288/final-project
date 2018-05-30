@@ -43,19 +43,21 @@ class Lobby extends React.Component {
 		let spectatorFriends = []
 		let friends = []
 		// console.log('render lobby props', this.props)
-		this.props.user ? friends = this.props.user.friends.map(friend => friend.username) : null
+		if (this.props.user){
+			friends = this.props.user.friends.map(friend => friend.username)
+		}
 		let button = null
 		// console.log('friends', friends)
 		for(let game of this.props.openGames){
 			if (!game.player2){
-				button = <button data-id={game.id} onClick={this.joinGame}>vs {game.player1}</button>
+				button = <button data-id={game.id} key={game.id} onClick={this.joinGame}>vs {game.player1}</button>
 				if (friends.includes(game.player1)){
 					openFriends.push(button)
 				} else{
 					openGames.push(button)
 				}
 			} else {
-				button = <button data-id={game.id} onClick={this.spectateGame}>{game.player1} vs {game.player2}</button>
+				button = <button data-id={game.id} key={game.id} onClick={this.spectateGame}>{game.player1} vs {game.player2}</button>
 				if (friends.includes(game.player1) || friends.includes(game.player2)){
 					spectatorFriends.push(button)
 				} else {

@@ -87,6 +87,7 @@ class GameWebSocket extends React.Component {
               break
             case 'time_up':
               this.timeUp()
+              break
             default:
               console.log('message type unknown', data)
           }

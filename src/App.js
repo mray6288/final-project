@@ -37,9 +37,9 @@ class App extends Component {
           <nav>
           {this.props.user ? 
             <div>
-              <Link class='nav-lobby' to="/lobby">Lobby</Link>
-              <h1 class='nav-title'>Doodle Duel</h1>
-              <div class='nav-logout'>
+              <Link className='nav-lobby' to="/lobby">Lobby</Link>
+              <h1 className='nav-title'>Doodle Duel</h1>
+              <div className='nav-logout'>
               <Link onClick={() => this.props.logout()} to='/login'>
                 Logout
               </Link><br/>
