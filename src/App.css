@@ -146,6 +146,10 @@ nav {
 
 }
 
+.login-forms {
+  text-align:right;
+}
+
 .my-drawing {
   cursor: url('./pencil.png'), auto;
   padding: 8px;
