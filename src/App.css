@@ -59,6 +59,14 @@ header {
   background-color: #AF4B24;
 }
 
+form {
+  margin-left: auto;
+  margin-right: auto;
+  padding-right: 200px;
+  width: 400px;
+  text-align: right;
+}
+
 nav {
   background-color: #AF4B24;
   margin-bottom: 10px;
@@ -146,9 +154,7 @@ nav {
 
 }
 
-.login-forms {
-  text-align:right;
-}
+
 
 .my-drawing {
   cursor: url('./pencil.png'), auto;
